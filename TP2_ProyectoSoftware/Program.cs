@@ -2,6 +2,8 @@ using Aplicacion;
 using Aplicacion.Casos_de_usos;
 using Aplicacion.Interfaces.Aplicacion;
 using Aplicación.Interfaces.Infraestructura;
+using Aplicacion.Interfaces.Infraestructura;
+using Infraestructura.CUD_DB;
 using Infraestructura.EstructuraDB;
 using Infraestructura.Inserts;
 using Infraestructura.Querys;
@@ -26,7 +28,7 @@ builder.Services.AddDbContext<Contexto_Cine>(options =>
 builder.Services.AddTransient<IAgregar,Insertar_Funcion>();
 builder.Services.AddTransient<IConsultas, Consulta_Funcion>();
 builder.Services.AddTransient<IServiciosFunciones, ServiciosFunciones>();
-
+builder.Services.AddTransient<IEliminar, Eliminar_Funcion>();
 
 
 var app = builder.Build(); 

@@ -13,5 +13,8 @@ namespace Aplicacion.Interfaces.Aplicacion
         Task<List<CarteleraDTO>> GetFuncionesGenero(int? id, List<CarteleraDTO> result);
         Task<List<CarteleraDTO>> GetFunciones();
         Task AddFunciones(Funciones funcion);
+        Task<List<bool>> GetId(int IdPelicula, int IdSala);
+        Task<Funciones> ComprobarFunciones(int id);
+        Task EliminarFuncion(Funciones funcion);
     }
 }

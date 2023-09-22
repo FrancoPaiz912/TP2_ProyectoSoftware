@@ -2,6 +2,7 @@
 using Aplicacion.Excepciones;
 using Aplicacion.Interfaces.Aplicacion;
 using Aplicación.Interfaces.Infraestructura;
+using Aplicacion.Interfaces.Infraestructura;
 using Dominio;
 using System.Security.Cryptography;
 
@@ -11,17 +12,19 @@ namespace Aplicacion.Casos_de_usos
     {
         private readonly IConsultas _consultas;
         private readonly IAgregar _Agregar;
-        public ServiciosFunciones(IConsultas consultas, IAgregar Agregar)
+        private readonly IEliminar _Eliminar;
+        public ServiciosFunciones(IConsultas consultas, IAgregar Agregar, IEliminar Eliminar)
         {
             _consultas = consultas;
             _Agregar = Agregar;
+            _Eliminar = Eliminar;
         }
 
         //Gets
 
         async Task<List<CarteleraDTO>> IServiciosFunciones.GetFunciones()
         {
-            List<CarteleraDTO> acompanante = _consultas.ListarFunciones();
+            List<CarteleraDTO> acompanante = await _consultas.ListarFunciones();
             return acompanante;
         }
 
@@ -29,7 +32,7 @@ namespace Aplicacion.Casos_de_usos
         {
             if (result.Count() == 0 && dia != null)
             {
-                result = _consultas.ListarFecha(dia, result);
+                result = await _consultas.ListarFecha(dia, result);
                 return result;
             }
             else
@@ -43,7 +46,7 @@ namespace Aplicacion.Casos_de_usos
         {
             if (result.Count() == 0 && PeliculaID != null)
             {
-                result = _consultas.ListarPeliculas(PeliculaID, result);
+                result = await _consultas.ListarPeliculas(PeliculaID, result);
                 return result;
             }
             else
@@ -57,7 +60,7 @@ namespace Aplicacion.Casos_de_usos
         {
             if (result.Count() == 0 && GeneroID != null)
             {
-                result = _consultas.ListarGeneros(GeneroID, result);
+                result = await _consultas.ListarGeneros(GeneroID, result);
                 return result;
             }
             else
@@ -70,7 +73,21 @@ namespace Aplicacion.Casos_de_usos
         async Task IServiciosFunciones.AddFunciones(Funciones funcion)
         {
             _Agregar.AgregarFuncion(funcion);
+        }
 
+        async Task<List<bool>> IServiciosFunciones.GetId(int IdPelicula,int IdSala)
+        {
+            return await _consultas.GetIDs(IdPelicula,IdSala);
+        }
+
+        async Task<Funciones> IServiciosFunciones.ComprobarFunciones(int id)
+        {
+            return await _consultas.GetIdFuncion(id);
+        }
+
+        async Task IServiciosFunciones.EliminarFuncion(Funciones funcion)
+        {
+            await _Eliminar.RemoverFuncion(funcion);
         }
     }
 }

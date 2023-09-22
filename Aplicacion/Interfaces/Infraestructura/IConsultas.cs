@@ -6,10 +6,12 @@ namespace Aplicación.Interfaces.Infraestructura
 {
     public interface IConsultas
     {
-        List<CarteleraDTO> ListarFunciones(int? id, List<CarteleraDTO> result);
-        List<CarteleraDTO> ListarPeliculas(int? id, List<CarteleraDTO> result);
-        List<CarteleraDTO> ListarGeneros(int? id, List<CarteleraDTO> result);
-        List<CarteleraDTO> ListarFecha(DateTime? fecha, List<CarteleraDTO> result);
-        List<CarteleraDTO> ListarFunciones();
+        Task<List<CarteleraDTO>> ListarFunciones(int? id, List<CarteleraDTO> result);
+        Task<List<CarteleraDTO>> ListarPeliculas(int? id, List<CarteleraDTO> result);
+        Task<List<CarteleraDTO>> ListarGeneros(int? id, List<CarteleraDTO> result);
+        Task<List<CarteleraDTO>> ListarFecha(DateTime? fecha, List<CarteleraDTO> result);
+        Task<List<CarteleraDTO>> ListarFunciones();
+        Task<List<bool>> GetIDs(int IdPelicula, int IdSala);
+        Task<Funciones> GetIdFuncion(int id);
     }
 }

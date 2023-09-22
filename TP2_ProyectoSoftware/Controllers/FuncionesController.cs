@@ -92,21 +92,35 @@ namespace TP2_ProyectoSoftware.Controllers
         {
             try
             {
+                List<bool> result = await _Servicio.GetId(funcion.PeliculaId, funcion.SalaId);
+                if (result[0] == false) return BadRequest("No existe una pelicula asociada a ese ID");
+                if (result[1] == false) return BadRequest("No existe una Sala asociada a ese ID");
                 Funciones func = new Funciones
-                {
-                    PeliculaId = funcion.PeliculaId, //Ir a buscar las ID, comparar si existen y por otro lado, actuar al respecto.
-                    SalaId = funcion.SalaId,
-                    Fecha = DateTime.Parse(funcion.Fecha), //Controlar errores temporales
-                    Hora = DateTime.Parse(funcion.Hora),
-                };
+                    {
+                        PeliculaId = funcion.PeliculaId,
+                        SalaId = funcion.SalaId,
+                        Fecha = DateTime.Parse(funcion.Fecha),
+                        Hora = DateTime.Parse(funcion.Hora),
+                    };
                 await _Servicio.AddFunciones(func);
             }
             catch (FormatException)
             {
-                return StatusCode(500);
+                return BadRequest("Por favor ingrese una fecha y/o día valido");
             }
             return new JsonResult(funcion);
         }
 
+        [HttpDelete]
+        public async Task<ActionResult> RemoveFunciones(int ID)
+        {
+            Funciones func = await _Servicio.ComprobarFunciones(ID);
+            if (func != null)
+            {
+                await _Servicio.EliminarFuncion(func);
+                return Ok("La funcion ha sido borrada exitosamente.");
+            }
+            else return NotFound("El ID ingresado no corresponde a ninguna Funcion registrada en la base de datos."); 
+        }
     }
 }

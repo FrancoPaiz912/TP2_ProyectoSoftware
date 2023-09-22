@@ -3,6 +3,7 @@ using Aplicación.Interfaces.Infraestructura;
 using Dominio;
 using Infraestructura.EstructuraDB;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Infraestructura.Querys
 {
@@ -15,7 +16,7 @@ namespace Infraestructura.Querys
             _Contexto = context;
         }
 
-        List<CarteleraDTO> IConsultas.ListarFunciones()
+        async Task<List<CarteleraDTO>> IConsultas.ListarFunciones()
         {
             return (from Funciones in _Contexto.Funciones
                    join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
@@ -38,7 +39,7 @@ namespace Infraestructura.Querys
                    }).ToList();
         }
 
-        List<CarteleraDTO> IConsultas.ListarFecha(DateTime? fecha, List<CarteleraDTO> result)
+        async Task<List<CarteleraDTO>> IConsultas.ListarFecha(DateTime? fecha, List<CarteleraDTO> result)
         {
             return (from Funciones in _Contexto.Funciones
                     join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
@@ -62,7 +63,7 @@ namespace Infraestructura.Querys
                     }).ToList();
         }
 
-        List<CarteleraDTO> IConsultas.ListarFunciones(int? id, List<CarteleraDTO> result)
+        async Task<List<CarteleraDTO>> IConsultas.ListarFunciones(int? id, List<CarteleraDTO> result)
         {
             return (from Funciones in _Contexto.Funciones
                     join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
@@ -86,7 +87,7 @@ namespace Infraestructura.Querys
                     }).ToList();
         }
 
-        List<CarteleraDTO> IConsultas.ListarPeliculas(int? id, List<CarteleraDTO> result)
+        async Task<List<CarteleraDTO>> IConsultas.ListarPeliculas(int? id, List<CarteleraDTO> result)
         {
             return (from Funciones in _Contexto.Funciones
                     join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
@@ -110,13 +111,8 @@ namespace Infraestructura.Querys
                     }).ToList();
         }
 
-        List<CarteleraDTO> IConsultas.ListarGeneros(int? id, List<CarteleraDTO> result)
+        async Task<List<CarteleraDTO>> IConsultas.ListarGeneros(int? id, List<CarteleraDTO> result)
         {
-            //return _Contexto.Funciones.Include(s => s.Tickets)
-            //    .Include(s => s.Salas)
-            //    .Include(s => s.Peliculas)
-            //    .ThenInclude(s => s.Generos).Where(s => s.SalaId == id).ToList();
-
             return (from Funciones in _Contexto.Funciones
                    join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
                    join Salas in _Contexto.Salas on Funciones.SalaId equals Salas.SalasId
@@ -138,6 +134,24 @@ namespace Infraestructura.Querys
                        genero = Genero.Nombre,
                    }).ToList();
 
+        }
+
+        async Task<List<bool>> IConsultas.GetIDs(int IdPelicula, int IdSala)
+        {
+            List<bool> list= new List<bool>();
+
+            if (_Contexto.Peliculas.Any(s => s.Peliculasid == IdPelicula)) list.Add(true);
+            else list.Add(false);
+
+            if (_Contexto.Salas.Any(s => s.SalasId == IdSala)) list.Add(true);
+            else list.Add(false);
+
+            return list;
+        }
+
+        async Task<Funciones> IConsultas.GetIdFuncion(int id)
+        {
+            return await _Contexto.Funciones.FirstOrDefaultAsync(s => s.FuncionesId == id);
         }
     }
 }
