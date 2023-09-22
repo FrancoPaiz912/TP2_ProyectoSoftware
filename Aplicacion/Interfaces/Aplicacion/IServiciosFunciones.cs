@@ -1,4 +1,5 @@
 ﻿using Aplicacion.DTO;
+using Dominio;
 using System.Threading.Tasks;
 
 namespace Aplicacion.Interfaces.Aplicacion
@@ -7,9 +8,10 @@ namespace Aplicacion.Interfaces.Aplicacion
     {
         //void ObtenerFunciones();
         //void IntroducirFuncion();
-        Task<List<FuncionesDTO>> GetFuncionesDia(DateTime? dia, List<FuncionesDTO> result);
-        Task<List<FuncionesDTO>> GetFuncionesNombrePelicula(int? id, List<FuncionesDTO> result);
-        Task<List<FuncionesDTO>> GetFuncionesGenero(int? id, List<FuncionesDTO> result);
-        Task<List<FuncionesDTO>> GetFunciones();
+        Task<List<CarteleraDTO>> GetFuncionesDia(DateTime? dia, List<CarteleraDTO> result);
+        Task<List<CarteleraDTO>> GetFuncionesNombrePelicula(int? id, List<CarteleraDTO> result);
+        Task<List<CarteleraDTO>> GetFuncionesGenero(int? id, List<CarteleraDTO> result);
+        Task<List<CarteleraDTO>> GetFunciones();
+        Task AddFunciones(Funciones funcion);
     }
 }

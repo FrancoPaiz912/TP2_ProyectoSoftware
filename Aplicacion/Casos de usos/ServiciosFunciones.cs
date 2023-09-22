@@ -19,13 +19,13 @@ namespace Aplicacion.Casos_de_usos
 
         //Gets
 
-        async Task<List<FuncionesDTO>> IServiciosFunciones.GetFunciones()
+        async Task<List<CarteleraDTO>> IServiciosFunciones.GetFunciones()
         {
-            List<FuncionesDTO> acompanante = _consultas.ListarFunciones();
+            List<CarteleraDTO> acompanante = _consultas.ListarFunciones();
             return acompanante;
         }
 
-        async Task<List<FuncionesDTO>> IServiciosFunciones.GetFuncionesDia(DateTime? dia, List<FuncionesDTO> result)
+        async Task<List<CarteleraDTO>> IServiciosFunciones.GetFuncionesDia(DateTime? dia, List<CarteleraDTO> result)
         {
             if (result.Count() == 0 && dia != null)
             {
@@ -39,7 +39,7 @@ namespace Aplicacion.Casos_de_usos
             }
         }
 
-        async Task<List<FuncionesDTO>> IServiciosFunciones.GetFuncionesNombrePelicula(int? PeliculaID, List<FuncionesDTO> result)
+        async Task<List<CarteleraDTO>> IServiciosFunciones.GetFuncionesNombrePelicula(int? PeliculaID, List<CarteleraDTO> result)
         {
             if (result.Count() == 0 && PeliculaID != null)
             {
@@ -53,7 +53,7 @@ namespace Aplicacion.Casos_de_usos
             }
         }
 
-        async Task<List<FuncionesDTO>> IServiciosFunciones.GetFuncionesGenero(int? GeneroID, List<FuncionesDTO> result)
+        async Task<List<CarteleraDTO>> IServiciosFunciones.GetFuncionesGenero(int? GeneroID, List<CarteleraDTO> result)
         {
             if (result.Count() == 0 && GeneroID != null)
             {
@@ -65,6 +65,12 @@ namespace Aplicacion.Casos_de_usos
                 result = result.Where(s => s.GenerosId == GeneroID).ToList();
                 return result;
             }
+        }
+
+        async Task IServiciosFunciones.AddFunciones(Funciones funcion)
+        {
+            _Agregar.AgregarFuncion(funcion);
+
         }
     }
 }

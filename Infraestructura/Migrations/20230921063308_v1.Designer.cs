@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructura.Migrations
 {
     [DbContext(typeof(Contexto_Cine))]
-    [Migration("20230912051326_v1")]
+    [Migration("20230921063308_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Infraestructura.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("ProductVersion", "7.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -36,14 +36,14 @@ namespace Infraestructura.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("Hora")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("PeliculaId")
                         .HasColumnType("int");
 
                     b.Property<int>("SalaId")
                         .HasColumnType("int");
-
-                    b.Property<TimeSpan>("Tiempo")
-                        .HasColumnType("time");
 
                     b.HasKey("FuncionesId");
 

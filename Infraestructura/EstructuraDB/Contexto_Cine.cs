@@ -46,7 +46,7 @@ namespace Infraestructura.EstructuraDB
                 Entity.ToTable("Funciones");
                 Entity.HasKey(pk => pk.FuncionesId);
                 Entity.Property(pk => pk.FuncionesId).ValueGeneratedOnAdd().IsRequired();
-                Entity.Property(a => a.Tiempo).IsRequired();
+                Entity.Property(a => a.Hora).IsRequired();
                 Entity.Property(a => a.Fecha).IsRequired();
                 Entity.HasOne<Peliculas>(tp => tp.Peliculas)
                 .WithMany(lt => lt.Funciones)
