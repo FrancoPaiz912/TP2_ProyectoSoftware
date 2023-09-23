@@ -89,5 +89,10 @@ namespace Aplicacion.Casos_de_usos
         {
             await _Eliminar.RemoverFuncion(funcion);
         }
+
+        async Task<bool> IServiciosFunciones.ComprobarHorario(int Salaid, DateTime Fecha, TimeSpan Hora)
+        {
+            return await _consultas.ComprobacionHoraria(Salaid, Fecha, Hora);
+        }
     }
 }

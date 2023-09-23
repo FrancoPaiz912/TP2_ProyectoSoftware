@@ -90,24 +90,30 @@ namespace TP2_ProyectoSoftware.Controllers
         [HttpPost]
         public async Task<ActionResult> CrearFunciones(FuncionesDTO funcion)
         {
+            List<bool> result = await _Servicio.GetId(funcion.PeliculaId, funcion.SalaId);
+            if (result[0] == false) return BadRequest("No existe una pelicula asociada a ese ID");
+            if (result[1] == false) return BadRequest("No existe una Sala asociada a ese ID");
             try
             {
-                List<bool> result = await _Servicio.GetId(funcion.PeliculaId, funcion.SalaId);
-                if (result[0] == false) return BadRequest("No existe una pelicula asociada a ese ID");
-                if (result[1] == false) return BadRequest("No existe una Sala asociada a ese ID");
-                Funciones func = new Funciones
-                    {
-                        PeliculaId = funcion.PeliculaId,
-                        SalaId = funcion.SalaId,
-                        Fecha = DateTime.Parse(funcion.Fecha),
-                        Hora = DateTime.Parse(funcion.Hora),
-                    };
-                await _Servicio.AddFunciones(func);
+                DateTime Comprobar1 = DateTime.Parse(funcion.Fecha).Date;
+                TimeSpan Comprobar2 = DateTime.Parse(funcion.Hora).TimeOfDay;
+            if (await _Servicio.ComprobarHorario(funcion.SalaId,Comprobar1,Comprobar2))
+            {
+                return BadRequest("Horario ocupado, por favor ingrese otro");
+            }
             }
             catch (FormatException)
             {
                 return BadRequest("Por favor ingrese una fecha y/o día valido");
             }
+            Funciones func = new Funciones
+                {
+                    PeliculaId = funcion.PeliculaId,
+                    SalaId = funcion.SalaId,
+                    Fecha = DateTime.Parse(funcion.Fecha),  //Ver tiempo de función. Ir a: Fecha, Sala, Comprobar (beetween (where)) si el horario esta en el medio de funciones
+                    Hora = DateTime.Parse(funcion.Hora).TimeOfDay,
+                };
+            await _Servicio.AddFunciones(func);
             return new JsonResult(funcion);
         }
 

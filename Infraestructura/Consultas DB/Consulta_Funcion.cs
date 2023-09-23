@@ -153,5 +153,15 @@ namespace Infraestructura.Querys
         {
             return await _Contexto.Funciones.FirstOrDefaultAsync(s => s.FuncionesId == id);
         }
+
+        async Task<bool> IConsultas.ComprobacionHoraria(int Salaid, DateTime Fecha, TimeSpan Horainicio)
+        {
+            TimeSpan HoraFinal = Horainicio + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30);
+            List<Funciones> list = _Contexto.Funciones.Where(s => s.SalaId == Salaid && s.Fecha == Fecha).AsEnumerable()
+                .Where(s => s.Hora + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30) > Horainicio && Horainicio >= s.Hora
+                 || s.Hora + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30) >= HoraFinal && HoraFinal > s.Hora).ToList(); 
+            if (list.Count() == 0) return false;
+            else return true; 
+        }
     }
 }

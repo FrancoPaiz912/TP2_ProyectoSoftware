@@ -13,5 +13,6 @@ namespace Aplicación.Interfaces.Infraestructura
         Task<List<CarteleraDTO>> ListarFunciones();
         Task<List<bool>> GetIDs(int IdPelicula, int IdSala);
         Task<Funciones> GetIdFuncion(int id);
+        Task<bool> ComprobacionHoraria(int Salaid, DateTime Fecha, TimeSpan Hora);
     }
 }

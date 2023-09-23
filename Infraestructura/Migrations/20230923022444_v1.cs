@@ -72,7 +72,7 @@ namespace Infraestructura.Migrations
                     PeliculaId = table.Column<int>(type: "int", nullable: false),
                     SalaId = table.Column<int>(type: "int", nullable: false),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Hora = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Hora = table.Column<TimeSpan>(type: "time", nullable: false)
                 },
                 constraints: table =>
                 {

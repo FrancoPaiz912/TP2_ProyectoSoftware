@@ -20,7 +20,7 @@ namespace Aplicacion.DTO
         public string Trailer { get; set; }
         public string Sala { get; set; }
         public int Capacidad { get; set; }
-        public DateTime Hora { get; set; }
+        public TimeSpan Hora { get; set; }
         public string genero { get; set; }
     }
 }

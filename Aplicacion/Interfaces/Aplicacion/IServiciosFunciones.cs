@@ -16,5 +16,6 @@ namespace Aplicacion.Interfaces.Aplicacion
         Task<List<bool>> GetId(int IdPelicula, int IdSala);
         Task<Funciones> ComprobarFunciones(int id);
         Task EliminarFuncion(Funciones funcion);
+        Task<bool> ComprobarHorario(int Salaid, DateTime Fecha, TimeSpan Hora);
     }
 }
