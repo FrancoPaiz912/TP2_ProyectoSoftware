@@ -18,7 +18,7 @@ namespace TP2_ProyectoSoftware.Controllers
         }
 
         [HttpPut("{ID}")] //Si se ponen acá se hacen obligatorios
-        public async Task<ActionResult> ActualizarPelicula(int ID, PeliculaDTO pelicula) //Comprobar que pasa con el límite de caracteres
+        public async Task<ActionResult> ActualizarPelicula(int ID, PeliculaDTO pelicula)
         {
             string result = await _Servicio.LimitarCaracteres(pelicula);
 

@@ -9,6 +9,6 @@ namespace Aplicacion.Interfaces.Infraestructura
 {
     public interface IEliminar
     {
-        Task RemoverFuncion(Funciones funcion);
+        Task<bool> RemoverFuncion(Funciones funcion);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Aplicacion.Interfaces.Infraestructura;
 using Dominio;
 using Infraestructura.EstructuraDB;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +19,17 @@ namespace Infraestructura.CUD_DB
             _Contexto = contexto;
         }
 
-        async Task IEliminar.RemoverFuncion(Funciones funcion)
+        async Task<bool> IEliminar.RemoverFuncion(Funciones funcion)
         {
+           Funciones result = await _Contexto.Funciones.Include(s => s.Tickets)
+                .Where(s => s.FuncionesId == funcion.FuncionesId && s.Tickets.Count() == 0).FirstOrDefaultAsync();
+            if (result == null)
+            {
+                return false;
+            }
             _Contexto.Remove(funcion);
             await _Contexto.SaveChangesAsync();
+            return true;
         }
     }
 }

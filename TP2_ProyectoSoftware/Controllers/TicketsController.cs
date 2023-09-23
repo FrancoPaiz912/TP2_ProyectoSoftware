@@ -20,13 +20,6 @@ namespace TP2_ProyectoSoftware.Controllers
             _ServicioSalas = salas;
         }
 
-        //Debe permitir obtener un ticket para una función.
-        //Se debe de crear un ticket (Post) y relacionarlo a la función y mediante esta restar capacidad en la sala
-        //Pasos
-        //1. Comprobar que exista la función (ID). Listo
-        //2. Comprobar que haya capacidad disponible en la sala. Para esto comprobamos con la funcion la cantidad de tickets vendidos y se lo descontamos a la capacidad.
-        //3. Generar un ticket correctamente. //Posee función id y usuario. Mediante la función ID debemos de buscar y crear un ticket para dicha funcion.
-
         [HttpPost]
         public async Task<ActionResult> CrearTicket(TicketDTO Ticket)
         {

@@ -85,9 +85,9 @@ namespace Aplicacion.Casos_de_usos
             return await _Consultas.GetIdFuncion(id);
         }
 
-        async Task IServiciosFunciones.EliminarFuncion(Funciones funcion)
+        async Task<bool> IServiciosFunciones.EliminarFuncion(Funciones funcion)
         {
-            await _Eliminar.RemoverFuncion(funcion);
+            return await _Eliminar.RemoverFuncion(funcion);
         }
 
         async Task<bool> IServiciosFunciones.ComprobarHorario(int Salaid, DateTime Fecha, TimeSpan Hora)

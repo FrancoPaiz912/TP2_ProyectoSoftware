@@ -110,23 +110,23 @@ namespace TP2_ProyectoSoftware.Controllers
                 {
                     PeliculaId = funcion.PeliculaId,
                     SalaId = funcion.SalaId,
-                    Fecha = DateTime.Parse(funcion.Fecha),  //Ver tiempo de función. Ir a: Fecha, Sala, Comprobar (beetween (where)) si el horario esta en el medio de funciones
+                    Fecha = DateTime.Parse(funcion.Fecha), 
                     Hora = DateTime.Parse(funcion.Hora).TimeOfDay,
                 };
             await _Servicio.AddFunciones(func);
             return new JsonResult(funcion);
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> RemoveFunciones(int ID) //Comprobar que la función a eliminar no tenga tickets vendidos
+        [HttpDelete("{ID}")]
+        public async Task<ActionResult> RemoveFunciones(int ID) 
         {
             Funciones func = await _Servicio.ComprobarFunciones(ID);
             if (func != null)
             {
-                await _Servicio.EliminarFuncion(func);
-                return Ok("La funcion ha sido borrada exitosamente.");
+                if (await _Servicio.EliminarFuncion(func)) return Ok("La funcion ha sido borrada exitosamente.");
+                else return BadRequest("La funcion que desea eliminar ya tiene tickets vendidos");
             }
-            else return NotFound("El ID ingresado no corresponde a ninguna Funcion registrada en la base de datos."); 
+            return NotFound("El ID ingresado no corresponde a ninguna Funcion registrada en la base de datos."); 
         }
     }
 }
