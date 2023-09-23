@@ -16,123 +16,65 @@ namespace Infraestructura.Querys
             _Contexto = context;
         }
 
-        async Task<List<CarteleraDTO>> IConsultasFunciones.ListarFunciones() //Retornar solo las tablas con las condiciones y armar el DTO en aplicacion
+        async Task<List<Funciones>> IConsultasFunciones.ListarFunciones() //Retornar solo las tablas con las condiciones y armar el DTO en aplicacion
         {
-            return (from Funciones in _Contexto.Funciones
-                   join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
-                   join Salas in _Contexto.Salas on Funciones.SalaId equals Salas.SalasId
-                   join Genero in _Contexto.Generos on Peliculas.Genero equals Genero.GenerosId
-                   select new CarteleraDTO
-                   {
-                       FuncionesId = Funciones.FuncionesId,
-                       PeliculaId = Peliculas.Peliculasid,
-                       GenerosId = Genero.GenerosId,
-                       Titulo = Peliculas.Titulo,
-                       Sinopsis = Peliculas.Sinopsis,
-                       Poster = Peliculas.Poster,
-                       Trailer = Peliculas.Trailer,
-                       Sala = Salas.Nombre,
-                       Capacidad = Salas.Capacidad,
-                       Fecha = Funciones.Fecha,
-                       Hora = Funciones.Hora,
-                       genero = Genero.Nombre,
-                   }).ToList();
+            return await _Contexto.Funciones
+                .Include(s => s.Tickets)
+                .Include(s => s.Salas)
+                .Include(s => s.Peliculas)
+                .ThenInclude(s => s.Generos).ToListAsync();
+                
+                //(from Funciones in _Contexto.Funciones
+                //   join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
+                //   join Salas in _Contexto.Salas on Funciones.SalaId equals Salas.SalasId
+                //   join Genero in _Contexto.Generos on Peliculas.Genero equals Genero.GenerosId
+                //   select new CarteleraDTO
+                //   {
+                //       FuncionesId = Funciones.FuncionesId,
+                //       PeliculaId = Peliculas.Peliculasid,
+                //       GenerosId = Genero.GenerosId,
+                //       Titulo = Peliculas.Titulo,
+                //       Sinopsis = Peliculas.Sinopsis,
+                //       Poster = Peliculas.Poster,
+                //       Trailer = Peliculas.Trailer,
+                //       Sala = Salas.Nombre,
+                //       Capacidad = Salas.Capacidad,
+                //       Fecha = Funciones.Fecha,
+                //       Hora = Funciones.Hora,
+                //       genero = Genero.Nombre,
+                //   }).ToList();
         }
 
-        async Task<List<CarteleraDTO>> IConsultasFunciones.ListarFecha(DateTime? fecha, List<CarteleraDTO> result)
+        async Task<List<Funciones>> IConsultasFunciones.ListarFecha(DateTime? fecha, List<CarteleraDTO> result)
         {
-            return (from Funciones in _Contexto.Funciones
-                    join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
-                    join Salas in _Contexto.Salas on Funciones.SalaId equals Salas.SalasId
-                    join Genero in _Contexto.Generos on Peliculas.Genero equals Genero.GenerosId
-                    where Funciones.Fecha == fecha
-                    select new CarteleraDTO
-                    {
-                        FuncionesId = Funciones.FuncionesId,
-                        PeliculaId = Peliculas.Peliculasid,
-                        GenerosId = Genero.GenerosId,
-                        Titulo = Peliculas.Titulo,
-                        Sinopsis = Peliculas.Sinopsis,
-                        Poster = Peliculas.Poster,
-                        Trailer = Peliculas.Trailer,
-                        Sala = Salas.Nombre,
-                        Capacidad = Salas.Capacidad,
-                        Fecha = Funciones.Fecha,
-                        Hora = Funciones.Hora,
-                        genero = Genero.Nombre,
-                    }).ToList();
+            return await _Contexto.Funciones.Include(s => s.Peliculas)
+                .ThenInclude(s => s.Generos)
+                .Include(s => s.Tickets)
+                .Include(s => s.Salas).Where(S => S.Fecha ==fecha).ToListAsync();
         }
 
-        async Task<List<CarteleraDTO>> IConsultasFunciones.ListarFunciones(int? id, List<CarteleraDTO> result)
+        async Task<List<Funciones>> IConsultasFunciones.ListarFunciones(int? id, List<CarteleraDTO> result)
         {
-            return (from Funciones in _Contexto.Funciones
-                    join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
-                    join Salas in _Contexto.Salas on Funciones.SalaId equals Salas.SalasId
-                    join Genero in _Contexto.Generos on Peliculas.Genero equals Genero.GenerosId
-                    where Funciones.FuncionesId == id
-                    select new CarteleraDTO
-                    {
-                        FuncionesId = Funciones.FuncionesId,
-                        PeliculaId = Peliculas.Peliculasid,
-                        GenerosId = Genero.GenerosId,
-                        Titulo = Peliculas.Titulo,
-                        Sinopsis = Peliculas.Sinopsis,
-                        Poster = Peliculas.Poster,
-                        Trailer = Peliculas.Trailer,
-                        Sala = Salas.Nombre,
-                        Capacidad = Salas.Capacidad,
-                        Fecha = Funciones.Fecha,
-                        Hora = Funciones.Hora,
-                        genero = Genero.Nombre,
-                    }).ToList();
+            return await _Contexto.Funciones.Include(s => s.Peliculas)
+                .ThenInclude(s => s.Generos)
+                .Include(s => s.Tickets)
+                .Include(s => s.Salas).Where(S => S.FuncionesId == id).ToListAsync();
         }
 
-        async Task<List<CarteleraDTO>> IConsultasFunciones.ListarPeliculas(int? id, List<CarteleraDTO> result)
+        async Task<List<Funciones>> IConsultasFunciones.ListarPeliculas(int? id, List<CarteleraDTO> result)
         {
-            return (from Funciones in _Contexto.Funciones
-                    join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
-                    join Salas in _Contexto.Salas on Funciones.SalaId equals Salas.SalasId
-                    join Genero in _Contexto.Generos on Peliculas.Genero equals Genero.GenerosId
-                    where Peliculas.Peliculasid == id
-                    select new CarteleraDTO
-                    {
-                        FuncionesId = Funciones.FuncionesId,
-                        PeliculaId = Peliculas.Peliculasid,
-                        GenerosId = Genero.GenerosId,
-                        Titulo = Peliculas.Titulo,
-                        Sinopsis = Peliculas.Sinopsis,
-                        Poster = Peliculas.Poster,
-                        Trailer = Peliculas.Trailer,
-                        Sala = Salas.Nombre,
-                        Capacidad = Salas.Capacidad,
-                        Fecha = Funciones.Fecha,
-                        Hora = Funciones.Hora,
-                        genero = Genero.Nombre,
-                    }).ToList();
+            return await _Contexto.Funciones.Include(s => s.Peliculas)
+                .ThenInclude(s => s.Generos)
+                .Include(s => s.Tickets)
+                .Include(s => s.Salas).Where(S => S.PeliculaId == id).ToListAsync();
         }
 
-        async Task<List<CarteleraDTO>> IConsultasFunciones.ListarGeneros(int? id, List<CarteleraDTO> result)
+        async Task<List<Funciones>> IConsultasFunciones.ListarGeneros(int? id, List<CarteleraDTO> result)
         {
-            return (from Funciones in _Contexto.Funciones
-                   join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
-                   join Salas in _Contexto.Salas on Funciones.SalaId equals Salas.SalasId
-                   join Genero in _Contexto.Generos on Peliculas.Genero equals Genero.GenerosId
-                    where Genero.GenerosId == id
-                    select new CarteleraDTO
-                    {
-                       FuncionesId=Funciones.FuncionesId,
-                       PeliculaId=Peliculas.Peliculasid,
-                       GenerosId=Genero.GenerosId,
-                       Titulo = Peliculas.Titulo,
-                       Sinopsis = Peliculas.Sinopsis,
-                       Poster = Peliculas.Poster,
-                       Trailer = Peliculas.Trailer,
-                       Sala = Salas.Nombre,
-                       Capacidad = Salas.Capacidad,
-                       Fecha = Funciones.Fecha,
-                       Hora = Funciones.Hora,
-                       genero = Genero.Nombre,
-                   }).ToList();
+            return await _Contexto.Funciones.Include(s => s.Salas)
+                .Include(s => s.Tickets)
+                .Include(s => s.Peliculas)
+                .ThenInclude(s => s.Generos).Where(S => S.Peliculas.Generos.GenerosId == id).ToListAsync();
 
         }
 
@@ -151,7 +93,8 @@ namespace Infraestructura.Querys
 
         async Task<Funciones> IConsultasFunciones.GetIdFuncion(int id)
         {
-            return await _Contexto.Funciones.FirstOrDefaultAsync(s => s.FuncionesId == id);
+            Funciones func= await _Contexto.Funciones.Include(s => s.Peliculas).ThenInclude(s => s.Generos).Include(s => s.Salas).FirstOrDefaultAsync(s => s.FuncionesId == id);
+            return func;
         }
 
         async Task<bool> IConsultasFunciones.ComprobacionHoraria(int Salaid, DateTime Fecha, TimeSpan Horainicio)

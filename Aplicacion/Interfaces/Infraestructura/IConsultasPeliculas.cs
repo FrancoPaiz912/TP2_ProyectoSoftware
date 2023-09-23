@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dominio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace Aplicacion.Interfaces.Infraestructura
     {
         Task<bool> ComprobarNombre(string nombre);
         Task<bool> ComprobarID(int id);
+        Task<Peliculas> RecuperarPelicula(int id);
     }
 }

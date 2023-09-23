@@ -13,5 +13,6 @@ namespace Aplicacion.Interfaces.Aplicacion
         Task<bool> ComprobarId(int id);
         Task<bool> ActulizarPelicula(int Id, PeliculaDTO peli);
         Task<string> LimitarCaracteres(PeliculaDTO pelicula);
+        Task<PeliculaDTO> DatosPelicula(int id);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Aplicacion.DTO;
 using Aplicacion.Interfaces.Aplicacion;
+using Aplicacion.RespuestasHTTP;
 using Dominio;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -19,7 +20,18 @@ namespace TP2_ProyectoSoftware.Controllers
             _Servicio = Servicio;
         }
 
-        [HttpGet]
+        [HttpGet("{ID}")]
+        public async Task<ActionResult> GetFuncion(int ID) 
+        {
+            FuncionRespuesta funcion = await _Servicio.GetDatosFuncion(ID);
+            if (funcion == null)
+            {
+                return BadRequest("El ID ingresado no coincide con ninguna funcion registrada en la base de datos, intente con otra");
+            }
+            return Ok(funcion);
+        }
+
+        [HttpGet] //Si tenes ganas podes meter los controles de cada uno (ej: cuando no exite idpelicula)
         public async Task<ActionResult<IEnumerable<Cartelera>>> GetFunciones(string? Fecha= null,int? IdPelicula=null, int? IdGenero =null) 
         {
             try
@@ -48,10 +60,10 @@ namespace TP2_ProyectoSoftware.Controllers
 
                 if (Fecha == null && IdPelicula == null && IdGenero == null)
                 {
-                    result = await _Servicio.GetFunciones();
+                    result = await _Servicio.GetFuncionesDTO();
                 }
 
-                if (!result.Any())
+                if (result.Count() == 0)
                 {
                     return NotFound("No se encontraron proximas funciones");
                 }
@@ -69,7 +81,7 @@ namespace TP2_ProyectoSoftware.Controllers
                             Sala = item.Sala,
                             Capacidad = item.Capacidad,
                             Fecha = item.Fecha.Date.ToString("dd/MM/yyyy"),
-                            Hora = item.Hora.ToString("HH:mm"),
+                            Hora = item.Hora.ToString(),
                             genero = item.genero,
                         });
                     }
@@ -85,7 +97,6 @@ namespace TP2_ProyectoSoftware.Controllers
 
 
         }
-
 
         [HttpPost]
         public async Task<ActionResult> CrearFunciones(FuncionesDTO funcion)
@@ -124,7 +135,7 @@ namespace TP2_ProyectoSoftware.Controllers
             if (func != null)
             {
                 if (await _Servicio.EliminarFuncion(func)) return Ok("La funcion ha sido borrada exitosamente.");
-                else return BadRequest("La funcion que desea eliminar ya tiene tickets vendidos");
+                else return BadRequest("La funcion que desea eliminar ya tiene tickets vendidos por lo que no se puede eliminar.");
             }
             return NotFound("El ID ingresado no corresponde a ninguna Funcion registrada en la base de datos."); 
         }

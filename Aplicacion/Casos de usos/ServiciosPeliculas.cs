@@ -57,5 +57,18 @@ namespace Aplicacion.Casos_de_usos
 
             return "";
         }
+
+        async Task<PeliculaDTO> IServiciosPeliculas.DatosPelicula(int id)
+        {
+            Peliculas pelicula = await _Consultas.RecuperarPelicula(id);
+            return new PeliculaDTO
+            {
+                Titulo = pelicula.Titulo,
+                Sinopsis = pelicula.Sinopsis,
+                Poster = pelicula.Poster,
+                Trailer = pelicula.Trailer,
+                Genero = pelicula.Generos.Nombre
+            };
+        }
     }
 }

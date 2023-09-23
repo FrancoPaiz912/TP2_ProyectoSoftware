@@ -4,6 +4,7 @@ using Aplicación.Interfaces.Infraestructura;
 using Dominio;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Sockets;
 
 namespace TP2_ProyectoSoftware.Controllers
 {
@@ -20,6 +21,25 @@ namespace TP2_ProyectoSoftware.Controllers
             _ServicioSalas = salas;
         }
 
+        [HttpGet("{ID_Funcion}")]
+        public async Task<ActionResult> ComprobarTickets(int ID_Funcion)
+        {
+            Funciones func = await _ServicioFunciones.ComprobarFunciones(ID_Funcion);
+            if (func == null)
+            {
+                return NotFound("Función no registrada en la base de datos");
+            }
+
+            int TicketsDisponibles = await _ServicioSalas.CapacidadDisponible(ID_Funcion);
+
+            if (TicketsDisponibles > 0)
+            {
+                return Ok("Para esta funcion aún quedan " + TicketsDisponibles + " Tickets disponibles");
+            }
+
+            return BadRequest("Lo sentimos, ya no quedan entradas");
+        }
+
         [HttpPost]
         public async Task<ActionResult> CrearTicket(TicketDTO Ticket)
         {
@@ -33,10 +53,9 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 return NotFound("No quedan más entradas disponibles");
             }
-            
-                return Ok(await _ServicioFunciones.GenerarTicket(Ticket));
+
+            return Ok(await _ServicioFunciones.GenerarTicket(Ticket));
             //return New JSON(func) {StatusCode = 201};
         }
-
     }
 }

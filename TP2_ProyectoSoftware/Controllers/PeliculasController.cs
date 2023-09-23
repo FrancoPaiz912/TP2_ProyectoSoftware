@@ -17,6 +17,17 @@ namespace TP2_ProyectoSoftware.Controllers
             _Servicio = Servicio;
         }
 
+        [HttpGet("{ID}")]
+        public async Task<ActionResult> GetInfoPelicula(int ID)
+        {
+            if (await _Servicio.ComprobarId(ID))
+            {
+                return BadRequest("El ID ingresado no se encuntra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido");
+            }
+
+            return Ok(await _Servicio.DatosPelicula(ID));
+        }
+
         [HttpPut("{ID}")] //Si se ponen acá se hacen obligatorios
         public async Task<ActionResult> ActualizarPelicula(int ID, PeliculaDTO pelicula)
         {
@@ -44,5 +55,6 @@ namespace TP2_ProyectoSoftware.Controllers
             
             return Ok("Los datos se han actualizado correctamente");
         }
+
     }
 }

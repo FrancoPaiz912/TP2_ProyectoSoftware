@@ -37,5 +37,10 @@ namespace Infraestructura.Consultas_DB
             }
             else return false;
         }
+
+        async Task<Peliculas> IConsultasPeliculas.RecuperarPelicula(int id)
+        {
+            return await _Contexto.Peliculas.Include(s => s.Generos).Where(s => s.Peliculasid == id).FirstOrDefaultAsync();
+        }
     }
 }
