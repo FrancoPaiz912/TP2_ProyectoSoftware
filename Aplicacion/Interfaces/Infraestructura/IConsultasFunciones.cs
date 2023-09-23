@@ -4,7 +4,7 @@ using Dominio;
 
 namespace Aplicación.Interfaces.Infraestructura
 {
-    public interface IConsultas
+    public interface IConsultasFunciones
     {
         Task<List<CarteleraDTO>> ListarFunciones(int? id, List<CarteleraDTO> result);
         Task<List<CarteleraDTO>> ListarPeliculas(int? id, List<CarteleraDTO> result);

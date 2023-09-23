@@ -1,4 +1,5 @@
 ﻿using Aplicacion.DTO;
+using Aplicacion.RespuestasHTTP;
 using Dominio;
 using System.Threading.Tasks;
 
@@ -6,8 +7,6 @@ namespace Aplicacion.Interfaces.Aplicacion
 {
     public interface IServiciosFunciones
     {
-        //void ObtenerFunciones();
-        //void IntroducirFuncion();
         Task<List<CarteleraDTO>> GetFuncionesDia(DateTime? dia, List<CarteleraDTO> result);
         Task<List<CarteleraDTO>> GetFuncionesNombrePelicula(int? id, List<CarteleraDTO> result);
         Task<List<CarteleraDTO>> GetFuncionesGenero(int? id, List<CarteleraDTO> result);
@@ -17,5 +16,6 @@ namespace Aplicacion.Interfaces.Aplicacion
         Task<Funciones> ComprobarFunciones(int id);
         Task EliminarFuncion(Funciones funcion);
         Task<bool> ComprobarHorario(int Salaid, DateTime Fecha, TimeSpan Hora);
+        Task<TicketRespuesta> GenerarTicket(TicketDTO ticket);
     }
 }

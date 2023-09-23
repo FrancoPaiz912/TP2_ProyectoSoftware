@@ -1,9 +1,12 @@
-﻿using Dominio;
+﻿using Aplicacion.DTO;
+using Dominio;
 
 namespace Aplicación.Interfaces.Infraestructura
 {
     public interface IAgregar
     {
-        void AgregarFuncion(Funciones funcion);
+        Task AgregarFuncion(Funciones funcion);
+
+        Task<Funciones> AgregarTicket(Tickets ticket);
     }
 }

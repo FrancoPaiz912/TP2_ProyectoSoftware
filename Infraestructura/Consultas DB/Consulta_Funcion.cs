@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Infraestructura.Querys
 {
-    public class Consulta_Funcion : IConsultas
+    public class Consulta_Funcion : IConsultasFunciones
     {
         private readonly Contexto_Cine _Contexto;
 
@@ -16,7 +16,7 @@ namespace Infraestructura.Querys
             _Contexto = context;
         }
 
-        async Task<List<CarteleraDTO>> IConsultas.ListarFunciones()
+        async Task<List<CarteleraDTO>> IConsultasFunciones.ListarFunciones() //Retornar solo las tablas con las condiciones y armar el DTO en aplicacion
         {
             return (from Funciones in _Contexto.Funciones
                    join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
@@ -39,7 +39,7 @@ namespace Infraestructura.Querys
                    }).ToList();
         }
 
-        async Task<List<CarteleraDTO>> IConsultas.ListarFecha(DateTime? fecha, List<CarteleraDTO> result)
+        async Task<List<CarteleraDTO>> IConsultasFunciones.ListarFecha(DateTime? fecha, List<CarteleraDTO> result)
         {
             return (from Funciones in _Contexto.Funciones
                     join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
@@ -63,7 +63,7 @@ namespace Infraestructura.Querys
                     }).ToList();
         }
 
-        async Task<List<CarteleraDTO>> IConsultas.ListarFunciones(int? id, List<CarteleraDTO> result)
+        async Task<List<CarteleraDTO>> IConsultasFunciones.ListarFunciones(int? id, List<CarteleraDTO> result)
         {
             return (from Funciones in _Contexto.Funciones
                     join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
@@ -87,7 +87,7 @@ namespace Infraestructura.Querys
                     }).ToList();
         }
 
-        async Task<List<CarteleraDTO>> IConsultas.ListarPeliculas(int? id, List<CarteleraDTO> result)
+        async Task<List<CarteleraDTO>> IConsultasFunciones.ListarPeliculas(int? id, List<CarteleraDTO> result)
         {
             return (from Funciones in _Contexto.Funciones
                     join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
@@ -111,7 +111,7 @@ namespace Infraestructura.Querys
                     }).ToList();
         }
 
-        async Task<List<CarteleraDTO>> IConsultas.ListarGeneros(int? id, List<CarteleraDTO> result)
+        async Task<List<CarteleraDTO>> IConsultasFunciones.ListarGeneros(int? id, List<CarteleraDTO> result)
         {
             return (from Funciones in _Contexto.Funciones
                    join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
@@ -136,7 +136,7 @@ namespace Infraestructura.Querys
 
         }
 
-        async Task<List<bool>> IConsultas.GetIDs(int IdPelicula, int IdSala)
+        async Task<List<bool>> IConsultasFunciones.GetIDs(int IdPelicula, int IdSala)
         {
             List<bool> list= new List<bool>();
 
@@ -149,12 +149,12 @@ namespace Infraestructura.Querys
             return list;
         }
 
-        async Task<Funciones> IConsultas.GetIdFuncion(int id)
+        async Task<Funciones> IConsultasFunciones.GetIdFuncion(int id)
         {
             return await _Contexto.Funciones.FirstOrDefaultAsync(s => s.FuncionesId == id);
         }
 
-        async Task<bool> IConsultas.ComprobacionHoraria(int Salaid, DateTime Fecha, TimeSpan Horainicio)
+        async Task<bool> IConsultasFunciones.ComprobacionHoraria(int Salaid, DateTime Fecha, TimeSpan Horainicio)
         {
             TimeSpan HoraFinal = Horainicio + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30);
             List<Funciones> list = _Contexto.Funciones.Where(s => s.SalaId == Salaid && s.Fecha == Fecha).AsEnumerable()
@@ -163,5 +163,7 @@ namespace Infraestructura.Querys
             if (list.Count() == 0) return false;
             else return true; 
         }
+
+        
     }
 }

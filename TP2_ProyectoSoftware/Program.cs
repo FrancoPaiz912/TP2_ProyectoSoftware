@@ -3,6 +3,7 @@ using Aplicacion.Casos_de_usos;
 using Aplicacion.Interfaces.Aplicacion;
 using Aplicación.Interfaces.Infraestructura;
 using Aplicacion.Interfaces.Infraestructura;
+using Infraestructura.Consultas_DB;
 using Infraestructura.CUD_DB;
 using Infraestructura.EstructuraDB;
 using Infraestructura.Inserts;
@@ -26,10 +27,14 @@ builder.Services.AddDbContext<Contexto_Cine>(options =>
 });
 
 builder.Services.AddTransient<IAgregar,Insertar_Funcion>();
-builder.Services.AddTransient<IConsultas, Consulta_Funcion>();
+builder.Services.AddTransient<IConsultasFunciones, Consulta_Funcion>();
 builder.Services.AddTransient<IServiciosFunciones, ServiciosFunciones>();
 builder.Services.AddTransient<IEliminar, Eliminar_Funcion>();
-
+builder.Services.AddTransient<IServiciosSalas, ServiciosSalas>();
+builder.Services.AddTransient<IConsultasSalas, Consultas_Salas>();
+builder.Services.AddTransient<IServiciosPeliculas, ServiciosPeliculas>();
+builder.Services.AddTransient<IActualizarPeliculas, Actualizar_Pelicula>();
+builder.Services.AddTransient<IConsultasPeliculas, Consultas_Peliculas>();
 
 var app = builder.Build(); 
 // Configure the HTTP request pipeline.

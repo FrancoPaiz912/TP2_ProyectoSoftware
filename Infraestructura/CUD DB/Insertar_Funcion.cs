@@ -1,6 +1,9 @@
-﻿using Aplicación.Interfaces.Infraestructura;
+﻿using Aplicacion.DTO;
+using Aplicación.Interfaces.Infraestructura;
 using Dominio;
 using Infraestructura.EstructuraDB;
+using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Infraestructura.Inserts
 {
@@ -13,10 +16,17 @@ namespace Infraestructura.Inserts
             _Contexto = contexto;
         }
 
-        public void AgregarFuncion(Funciones funcion)
+        async Task IAgregar.AgregarFuncion(Funciones funcion)
         {
             _Contexto.Add(funcion);
-            _Contexto.SaveChanges();
+            await _Contexto.SaveChangesAsync();
+        }
+
+        async Task<Funciones> IAgregar.AgregarTicket(Tickets ticket)
+        {
+            _Contexto.Add(ticket);
+            await _Contexto.SaveChangesAsync();
+            return await _Contexto.Funciones.Include(s => s.Salas).Include(s => s.Peliculas).ThenInclude(s => s.Generos).FirstOrDefaultAsync(s=> s.FuncionesId == ticket.FuncionId);
         }
     }
 }

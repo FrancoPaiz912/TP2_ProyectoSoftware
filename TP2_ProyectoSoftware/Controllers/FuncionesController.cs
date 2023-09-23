@@ -118,7 +118,7 @@ namespace TP2_ProyectoSoftware.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> RemoveFunciones(int ID)
+        public async Task<ActionResult> RemoveFunciones(int ID) //Comprobar que la función a eliminar no tenga tickets vendidos
         {
             Funciones func = await _Servicio.ComprobarFunciones(ID);
             if (func != null)
