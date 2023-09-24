@@ -22,13 +22,13 @@ namespace TP2_ProyectoSoftware.Controllers
         {
             if (await _Servicio.ComprobarId(ID))
             {
-                return BadRequest("El ID ingresado no se encuntra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido");
+                return NotFound("El ID ingresado no se encuntra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido");
             }
 
             return Ok(await _Servicio.DatosPelicula(ID));
         }
 
-        [HttpPut("{ID}")] //Si se ponen acá se hacen obligatorios
+        [HttpPut("{ID}")]
         public async Task<ActionResult> ActualizarPelicula(int ID, PeliculaDTO pelicula)
         {
             string result = await _Servicio.LimitarCaracteres(pelicula);
@@ -40,7 +40,7 @@ namespace TP2_ProyectoSoftware.Controllers
 
             if (await _Servicio.ComprobarId(ID))
                 {
-                    return BadRequest("El ID ingresado no se encuntra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido");
+                    return NotFound("El ID ingresado no se encuntra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido");
                 }
 
             if (await _Servicio.ConsultarNombre(pelicula.Titulo))
@@ -50,10 +50,10 @@ namespace TP2_ProyectoSoftware.Controllers
 
             if (!await _Servicio.ActulizarPelicula(ID, pelicula))
                 {
-                    return BadRequest("No se han podido actualizar los datos, compruebe que el genero exista en la base de datos");
+                    return NotFound("No se han podido actualizar los datos, compruebe que el genero exista en la base de datos");
                 }
             
-            return Ok("Los datos se han actualizado correctamente");
+            return Created("Los datos se han actualizado correctamente",pelicula); 
         }
 
     }

@@ -5,6 +5,7 @@ using Aplicación.Interfaces.Infraestructura;
 using Aplicacion.Interfaces.Infraestructura;
 using Aplicacion.RespuestasHTTP;
 using Dominio;
+using System;
 using System.Security.Cryptography;
 
 namespace Aplicacion.Casos_de_usos
@@ -146,9 +147,37 @@ namespace Aplicacion.Casos_de_usos
             }
         }
 
-        async Task IServiciosFunciones.AddFunciones(Funciones funcion)
+        async Task<List<Cartelera>> IServiciosFunciones.GetCartelera(List<CarteleraDTO> Funciones)
         {
-            _Agregar.AgregarFuncion(funcion);
+            List<Cartelera> cartelera = new List<Cartelera>();
+            foreach (var item in Funciones)
+            {
+                cartelera.Add(new Cartelera
+                {
+                    Titulo = item.Titulo,
+                    Sinopsis = item.Sinopsis,
+                    Poster = item.Poster,
+                    Trailer = item.Trailer,
+                    Sala = item.Sala,
+                    Capacidad = item.Capacidad,
+                    Fecha = item.Fecha.Date.ToString("dd/MM/yyyy"),
+                    Hora = item.Hora.ToString(),
+                    genero = item.genero,
+                });
+            }
+            return cartelera;
+        }
+
+        async Task IServiciosFunciones.AddFunciones(FuncionesDTO funcion)
+        {
+            
+            await _Agregar.AgregarFuncion(new Funciones
+            {
+                PeliculaId = funcion.PeliculaId,
+                SalaId = funcion.SalaId,
+                Fecha = DateTime.Parse(funcion.Fecha),
+                Hora = DateTime.Parse(funcion.Hora).TimeOfDay,
+            });
         }
 
         async Task<List<bool>> IServiciosFunciones.GetId(int IdPelicula,int IdSala)
@@ -212,5 +241,6 @@ namespace Aplicacion.Casos_de_usos
             }
             return null; 
         }
+
     }
 }

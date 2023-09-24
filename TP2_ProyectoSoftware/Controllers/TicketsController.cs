@@ -36,8 +36,8 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 return Ok("Para esta funcion aún quedan " + TicketsDisponibles + " Tickets disponibles");
             }
-
-            return BadRequest("Lo sentimos, ya no quedan entradas");
+            Response.Headers.Add("Motivo", "Lo sentimos, ya no quedan entradas");
+            return NoContent();
         }
 
         [HttpPost]
@@ -51,11 +51,11 @@ namespace TP2_ProyectoSoftware.Controllers
 
             if (await _ServicioSalas.CapacidadDisponible(Ticket.FuncionId) < 1)
             {
-                return NotFound("No quedan más entradas disponibles");
+                Response.Headers.Add("Motivo", "No quedan más entradas disponibles");
+                return NoContent();
             }
 
             return Ok(await _ServicioFunciones.GenerarTicket(Ticket));
-            //return New JSON(func) {StatusCode = 201};
         }
     }
 }

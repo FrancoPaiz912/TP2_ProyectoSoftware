@@ -23,26 +23,6 @@ namespace Infraestructura.Querys
                 .Include(s => s.Salas)
                 .Include(s => s.Peliculas)
                 .ThenInclude(s => s.Generos).ToListAsync();
-                
-                //(from Funciones in _Contexto.Funciones
-                //   join Peliculas in _Contexto.Peliculas on Funciones.PeliculaId equals Peliculas.Peliculasid
-                //   join Salas in _Contexto.Salas on Funciones.SalaId equals Salas.SalasId
-                //   join Genero in _Contexto.Generos on Peliculas.Genero equals Genero.GenerosId
-                //   select new CarteleraDTO
-                //   {
-                //       FuncionesId = Funciones.FuncionesId,
-                //       PeliculaId = Peliculas.Peliculasid,
-                //       GenerosId = Genero.GenerosId,
-                //       Titulo = Peliculas.Titulo,
-                //       Sinopsis = Peliculas.Sinopsis,
-                //       Poster = Peliculas.Poster,
-                //       Trailer = Peliculas.Trailer,
-                //       Sala = Salas.Nombre,
-                //       Capacidad = Salas.Capacidad,
-                //       Fecha = Funciones.Fecha,
-                //       Hora = Funciones.Hora,
-                //       genero = Genero.Nombre,
-                //   }).ToList();
         }
 
         async Task<List<Funciones>> IConsultasFunciones.ListarFecha(DateTime? fecha, List<CarteleraDTO> result)

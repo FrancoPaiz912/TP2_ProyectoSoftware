@@ -26,12 +26,14 @@ namespace TP2_ProyectoSoftware.Controllers
             FuncionRespuesta funcion = await _Servicio.GetDatosFuncion(ID);
             if (funcion == null)
             {
-                return BadRequest("El ID ingresado no coincide con ninguna funcion registrada en la base de datos, intente con otra");
+                Response.Headers.Add("Motivo", "El ID ingresado no coincide con ninguna funcion registrada en la base de datos, intente con otra ID.");
+
+                return NoContent();
             }
             return Ok(funcion);
         }
 
-        [HttpGet] //Si tenes ganas podes meter los controles de cada uno (ej: cuando no exite idpelicula)
+        [HttpGet] 
         public async Task<ActionResult<IEnumerable<Cartelera>>> GetFunciones(string? Fecha= null,int? IdPelicula=null, int? IdGenero =null) 
         {
             try
@@ -65,27 +67,12 @@ namespace TP2_ProyectoSoftware.Controllers
 
                 if (result.Count() == 0)
                 {
-                    return NotFound("No se encontraron proximas funciones");
+                    Response.Headers.Add("Motivo", "No se encontraron proximas funciones.");
+                    return NoContent();
                 }
                 else
                 {
-                    List<Cartelera> cartelera = new List<Cartelera>();
-                    foreach (var item in result)
-                    {
-                        cartelera.Add(new Cartelera
-                        {
-                            Titulo = item.Titulo,
-                            Sinopsis = item.Sinopsis,
-                            Poster = item.Poster,
-                            Trailer = item.Trailer,
-                            Sala = item.Sala,
-                            Capacidad = item.Capacidad,
-                            Fecha = item.Fecha.Date.ToString("dd/MM/yyyy"),
-                            Hora = item.Hora.ToString(),
-                            genero = item.genero,
-                        });
-                    }
-                    return Ok(cartelera);
+                    return Ok(_Servicio.GetCartelera(result));
                 }
             }catch (FormatException)
             {
@@ -94,8 +81,6 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 return BadRequest("Ingrese los datos correctamente");
             }
-
-
         }
 
         [HttpPost]
@@ -117,14 +102,7 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 return BadRequest("Por favor ingrese una fecha y/o día valido");
             }
-            Funciones func = new Funciones
-                {
-                    PeliculaId = funcion.PeliculaId,
-                    SalaId = funcion.SalaId,
-                    Fecha = DateTime.Parse(funcion.Fecha), 
-                    Hora = DateTime.Parse(funcion.Hora).TimeOfDay,
-                };
-            await _Servicio.AddFunciones(func);
+            await _Servicio.AddFunciones(funcion);
             return new JsonResult(funcion);
         }
 
@@ -137,7 +115,8 @@ namespace TP2_ProyectoSoftware.Controllers
                 if (await _Servicio.EliminarFuncion(func)) return Ok("La funcion ha sido borrada exitosamente.");
                 else return BadRequest("La funcion que desea eliminar ya tiene tickets vendidos por lo que no se puede eliminar.");
             }
-            return NotFound("El ID ingresado no corresponde a ninguna Funcion registrada en la base de datos."); 
+             Response.Headers.Add("Motivo", "El ID ingresado no corresponde a ninguna Funcion registrada en la base de datos.");
+            return NoContent(); 
         }
     }
 }

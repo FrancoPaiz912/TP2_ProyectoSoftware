@@ -27,11 +27,11 @@ namespace Infraestructura.Consultas_DB
             int genero =  _Contexto.Generos.Where(s => s.Nombre == peli.Genero).Select(s=> s.GenerosId).FirstOrDefault();
             if (pelicula != null && genero!= 0) 
             {
-                pelicula.Titulo=peli.Titulo; //Comprobar la cantidad de caracteres ingresados(que no excedan el límite)
+                pelicula.Titulo=peli.Titulo; 
                 pelicula.Sinopsis=peli.Sinopsis;
                 pelicula.Poster=peli.Poster;
                 pelicula.Trailer=peli.Trailer;
-                pelicula.Genero = genero; //Controlar si el género no existe
+                pelicula.Genero = genero; 
             } else if (genero == 0)
             {
                 return false;
