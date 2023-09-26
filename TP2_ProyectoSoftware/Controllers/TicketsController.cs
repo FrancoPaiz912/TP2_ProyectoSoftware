@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Sockets;
 
-namespace TP2_ProyectoSoftware.Controllers
+/*namespace TP2_ProyectoSoftware.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -58,4 +58,4 @@ namespace TP2_ProyectoSoftware.Controllers
             return Ok(await _ServicioFunciones.GenerarTicket(Ticket));
         }
     }
-}
+}*/

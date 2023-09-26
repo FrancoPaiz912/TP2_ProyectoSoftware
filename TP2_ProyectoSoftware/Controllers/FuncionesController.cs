@@ -13,17 +13,19 @@ namespace TP2_ProyectoSoftware.Controllers
     [ApiController]
     public class FuncionesController : ControllerBase
     {
-        private readonly IServiciosFunciones _Servicio;
-        
-        public FuncionesController(IServiciosFunciones Servicio)
+        private readonly IServiciosFunciones _ServicioFunciones;
+        private readonly IServiciosSalas _ServicioSalas;
+
+        public FuncionesController(IServiciosFunciones funciones, IServiciosSalas salas)
         {
-            _Servicio = Servicio;
+            _ServicioFunciones = funciones;
+            _ServicioSalas = salas;
         }
 
         [HttpGet("{ID}")]
         public async Task<ActionResult> GetFuncion(int ID) 
         {
-            FuncionRespuesta funcion = await _Servicio.GetDatosFuncion(ID);
+            FuncionRespuesta funcion = await _ServicioFunciones.GetDatosFuncion(ID);
             if (funcion == null)
             {
                 Response.Headers.Add("Motivo", "El ID ingresado no coincide con ninguna funcion registrada en la base de datos, intente con otra ID.");
@@ -44,25 +46,25 @@ namespace TP2_ProyectoSoftware.Controllers
                 if (Fecha != null && controlador)
                 {       
                     DateTime dia= DateTime.Parse(Fecha);
-                    result = await _Servicio.GetFuncionesDia(dia, result);
+                    result = await _ServicioFunciones.GetFuncionesDia(dia, result);
                     if (result.Count() == 0) controlador = false;
                 }
 
                 if (IdPelicula != null && controlador)
                 {
-                    result = await _Servicio.GetFuncionesNombrePelicula(IdPelicula, result);
+                    result = await _ServicioFunciones.GetFuncionesNombrePelicula(IdPelicula, result);
                     if (result.Count() == 0) controlador = false;
                 }
 
                 if (IdGenero != null && controlador)
                 {
-                    result = await _Servicio.GetFuncionesGenero(IdGenero, result);
+                    result = await _ServicioFunciones.GetFuncionesGenero(IdGenero, result);
                     if (result.Count() == 0) controlador = false;
                 }
 
                 if (Fecha == null && IdPelicula == null && IdGenero == null)
                 {
-                    result = await _Servicio.GetFuncionesDTO();
+                    result = await _ServicioFunciones.GetFuncionesDTO();
                 }
 
                 if (result.Count() == 0)
@@ -72,7 +74,7 @@ namespace TP2_ProyectoSoftware.Controllers
                 }
                 else
                 {
-                    return Ok(_Servicio.GetCartelera(result));
+                    return Ok(_ServicioFunciones.GetCartelera(result));
                 }
             }catch (FormatException)
             {
@@ -86,14 +88,14 @@ namespace TP2_ProyectoSoftware.Controllers
         [HttpPost]
         public async Task<ActionResult> CrearFunciones(FuncionesDTO funcion)
         {
-            List<bool> result = await _Servicio.GetId(funcion.PeliculaId, funcion.SalaId);
+            List<bool> result = await _ServicioFunciones.GetId(funcion.PeliculaId, funcion.SalaId);
             if (result[0] == false) return BadRequest("No existe una pelicula asociada a ese ID");
             if (result[1] == false) return BadRequest("No existe una Sala asociada a ese ID");
             try
             {
                 DateTime Comprobar1 = DateTime.Parse(funcion.Fecha).Date;
                 TimeSpan Comprobar2 = DateTime.Parse(funcion.Hora).TimeOfDay;
-            if (await _Servicio.ComprobarHorario(funcion.SalaId,Comprobar1,Comprobar2))
+            if (await _ServicioFunciones.ComprobarHorario(funcion.SalaId,Comprobar1,Comprobar2))
             {
                 return BadRequest("Horario ocupado, por favor ingrese otro");
             }
@@ -102,21 +104,59 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 return BadRequest("Por favor ingrese una fecha y/o día valido");
             }
-            await _Servicio.AddFunciones(funcion);
+            await _ServicioFunciones.AddFunciones(funcion);
             return new JsonResult(funcion);
         }
 
         [HttpDelete("{ID}")]
         public async Task<ActionResult> RemoveFunciones(int ID) 
         {
-            Funciones func = await _Servicio.ComprobarFunciones(ID);
+            Funciones func = await _ServicioFunciones.ComprobarFunciones(ID);
             if (func != null)
             {
-                if (await _Servicio.EliminarFuncion(func)) return Ok("La funcion ha sido borrada exitosamente.");
+                if (await _ServicioFunciones.EliminarFuncion(func)) return Ok("La funcion ha sido borrada exitosamente.");
                 else return BadRequest("La funcion que desea eliminar ya tiene tickets vendidos por lo que no se puede eliminar.");
             }
              Response.Headers.Add("Motivo", "El ID ingresado no corresponde a ninguna Funcion registrada en la base de datos.");
             return NoContent(); 
         }
+
+        [HttpGet("{ID_Funcion}")]
+        public async Task<ActionResult> ComprobarTickets(int ID_Funcion)
+        {
+            Funciones func = await _ServicioFunciones.ComprobarFunciones(ID_Funcion);
+            if (func == null)
+            {
+                return NotFound("Función no registrada en la base de datos");
+            }
+
+            int TicketsDisponibles = await _ServicioSalas.CapacidadDisponible(ID_Funcion);
+
+            if (TicketsDisponibles > 0)
+            {
+                return Ok("Para esta funcion aún quedan " + TicketsDisponibles + " Tickets disponibles");
+            }
+            Response.Headers.Add("Motivo", "Lo sentimos, ya no quedan entradas");
+            return NoContent();
+        }
+
+        [HttpPost("{Ticket}")]
+        public async Task<ActionResult> CrearTicket(TicketDTO Ticket)
+        {
+            Funciones func = await _ServicioFunciones.ComprobarFunciones(Ticket.FuncionId);
+            if (func == null)
+            {
+                return NotFound("Función no registrada en la base de datos");
+            }
+
+            if (await _ServicioSalas.CapacidadDisponible(Ticket.FuncionId) < 1)
+            {
+                Response.Headers.Add("Motivo", "No quedan más entradas disponibles");
+                return NoContent();
+            }
+
+            return Ok(await _ServicioFunciones.GenerarTicket(Ticket));
+        }
+
     }
 }
