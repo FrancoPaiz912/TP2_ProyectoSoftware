@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructura.Migrations
 {
     [DbContext(typeof(Contexto_Cine))]
-    [Migration("20230923022444_v1")]
+    [Migration("20230926060226_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -387,11 +387,9 @@ namespace Infraestructura.Migrations
 
             modelBuilder.Entity("Dominio.Tickets", b =>
                 {
-                    b.Property<int>("TicketsId")
+                    b.Property<Guid>("TicketsId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketsId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("FuncionId")
                         .HasColumnType("int");

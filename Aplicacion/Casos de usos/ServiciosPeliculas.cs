@@ -1,6 +1,7 @@
 ﻿using Aplicacion.DTO;
 using Aplicacion.Interfaces.Aplicacion;
 using Aplicacion.Interfaces.Infraestructura;
+using Aplicacion.RespuestasHTTP;
 using Dominio;
 using System;
 using System.Collections.Generic;
@@ -26,14 +27,41 @@ namespace Aplicacion.Casos_de_usos
             return await _Consultas.ComprobarID(id);
         }
 
-        async Task<bool> IServiciosPeliculas.ConsultarNombre(string nombre)
+        async Task<bool> IServiciosPeliculas.ConsultarNombre(int ID, PeliculaDTO nombre)
         {
-            return await _Consultas.ComprobarNombre(nombre);
+            return await _Consultas.ComprobarNombre(ID, nombre);
         }
 
-        async Task<bool> IServiciosPeliculas.ActulizarPelicula(int Id, PeliculaDTO peli)
+        async Task<PeliculaCompletaResponse> IServiciosPeliculas.ActulizarPelicula(int Id, PeliculaDTO peli)
         {
-            return await _Actualizar.ActualizarPelicula(Id,peli);
+            List<FuncionRespuesta> list = new List<FuncionRespuesta>();
+            Peliculas pelicula = await _Actualizar.ActualizarPelicula(Id, peli);
+            if (pelicula != null) {
+                foreach (var item in pelicula.Funciones)
+                {
+                    list.Add(new FuncionRespuesta
+                    {
+                        FuncionId = item.FuncionesId,
+                        Fecha = item.Fecha,
+                        Horario = item.Hora,
+                    });
+                }
+                return new PeliculaCompletaResponse
+                {
+                    Peliculaid = pelicula.Peliculasid,
+                    Titulo = pelicula.Titulo,
+                    Sinopsis = pelicula.Sinopsis,
+                    Poster = pelicula.Poster,
+                    Trailer = pelicula.Trailer,
+                    Genero = new GeneroRespuesta
+                    {
+                        Id = pelicula.Generos.GenerosId,
+                        Nombre = pelicula.Generos.Nombre,
+                    },
+                    funciones = list, //Crear funciones respuestas
+                };
+            }
+            else return null;
         }
 
         async Task<string> IServiciosPeliculas.LimitarCaracteres(PeliculaDTO pelicula)
@@ -58,17 +86,38 @@ namespace Aplicacion.Casos_de_usos
             return "";
         }
 
-        async Task<PeliculaDTO> IServiciosPeliculas.DatosPelicula(int id)
+        async Task<PeliculaCompletaResponse> IServiciosPeliculas.DatosPelicula(int id)
         {
-            Peliculas pelicula = await _Consultas.RecuperarPelicula(id);
-            return new PeliculaDTO
+            List<FuncionRespuesta> respuesta = new List<FuncionRespuesta>();
+            List<Funciones> pelicula = await _Consultas.RecuperarPelicula(id);
+            if (pelicula.Count > 0)
             {
-                Titulo = pelicula.Titulo,
-                Sinopsis = pelicula.Sinopsis,
-                Poster = pelicula.Poster,
-                Trailer = pelicula.Trailer,
-                Genero = pelicula.Generos.Nombre
-            };
+                foreach (Funciones func in pelicula)
+                {
+                    respuesta.Add(new FuncionRespuesta
+                    {
+                        FuncionId = func.FuncionesId,
+                        Fecha = func.Fecha,
+                        Horario = func.Hora,
+                    });
+                }
+
+                return new PeliculaCompletaResponse
+                {
+                    Peliculaid = pelicula[0].PeliculaId,
+                    Titulo = pelicula[0].Peliculas.Titulo,
+                    Sinopsis = pelicula[0].Peliculas.Sinopsis,
+                    Poster = pelicula[0].Peliculas.Poster,
+                    Trailer = pelicula[0].Peliculas.Trailer,
+                    Genero = new GeneroRespuesta
+                    {
+                        Id = pelicula[0].Peliculas.Generos.GenerosId,
+                        Nombre = pelicula[0].Peliculas.Generos.Nombre,
+                    },
+                    funciones = respuesta,
+                };
+            }
+            else return null;
         }
     }
 }

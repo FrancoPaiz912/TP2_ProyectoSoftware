@@ -384,11 +384,9 @@ namespace Infraestructura.Migrations
 
             modelBuilder.Entity("Dominio.Tickets", b =>
                 {
-                    b.Property<int>("TicketsId")
+                    b.Property<Guid>("TicketsId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketsId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("FuncionId")
                         .HasColumnType("int");

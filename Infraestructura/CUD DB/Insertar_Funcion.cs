@@ -22,11 +22,16 @@ namespace Infraestructura.Inserts
             await _Contexto.SaveChangesAsync();
         }
 
-        async Task<Funciones> IAgregar.AgregarTicket(Tickets ticket)
+        async Task<Tickets> IAgregar.AgregarTicket(Tickets ticket)
         {
             _Contexto.Add(ticket);
             await _Contexto.SaveChangesAsync();
-            return await _Contexto.Funciones.Include(s => s.Salas).Include(s => s.Peliculas).ThenInclude(s => s.Generos).FirstOrDefaultAsync(s=> s.FuncionesId == ticket.FuncionId);
+            return await _Contexto.Tickets.Include(s => s.Funciones)
+                .ThenInclude(s => s.Salas)
+                .ThenInclude(s => s.Funciones)
+                .ThenInclude(s => s.Peliculas)
+                .ThenInclude(s => s.Generos)
+                .FirstOrDefaultAsync(s=> s.Funciones.FuncionesId == ticket.FuncionId);
         }
     }
 }

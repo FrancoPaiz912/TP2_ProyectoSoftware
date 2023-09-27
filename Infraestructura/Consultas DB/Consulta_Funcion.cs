@@ -1,5 +1,6 @@
 ﻿using Aplicacion.DTO;
 using Aplicación.Interfaces.Infraestructura;
+using Aplicacion.RespuestasHTTP;
 using Dominio;
 using Infraestructura.EstructuraDB;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace Infraestructura.Querys
             _Contexto = context;
         }
 
-        async Task<List<Funciones>> IConsultasFunciones.ListarFunciones() //Retornar solo las tablas con las condiciones y armar el DTO en aplicacion
+        async Task<List<Funciones>> IConsultasFunciones.ListarFunciones() 
         {
             return await _Contexto.Funciones
                 .Include(s => s.Tickets)
@@ -25,15 +26,15 @@ namespace Infraestructura.Querys
                 .ThenInclude(s => s.Generos).ToListAsync();
         }
 
-        async Task<List<Funciones>> IConsultasFunciones.ListarFecha(DateTime? fecha, List<CarteleraDTO> result)
+        async Task<List<Funciones>> IConsultasFunciones.ListarFecha(DateTime fecha, List<FuncionCompletaRespuesta> result)
         {
             return await _Contexto.Funciones.Include(s => s.Peliculas)
                 .ThenInclude(s => s.Generos)
                 .Include(s => s.Tickets)
-                .Include(s => s.Salas).Where(S => S.Fecha ==fecha).ToListAsync();
+                .Include(s => s.Salas).Where(S => S.Fecha.Day == fecha.Day && S.Fecha.Month == fecha.Month).ToListAsync();
         }
 
-        async Task<List<Funciones>> IConsultasFunciones.ListarFunciones(int? id, List<CarteleraDTO> result)
+        async Task<List<Funciones>> IConsultasFunciones.ListarFunciones(int? id, List<FuncionCompletaRespuesta> result)
         {
             return await _Contexto.Funciones.Include(s => s.Peliculas)
                 .ThenInclude(s => s.Generos)
@@ -41,21 +42,29 @@ namespace Infraestructura.Querys
                 .Include(s => s.Salas).Where(S => S.FuncionesId == id).ToListAsync();
         }
 
-        async Task<List<Funciones>> IConsultasFunciones.ListarPeliculas(int? id, List<CarteleraDTO> result)
+        async Task<List<Funciones>> IConsultasFunciones.ListarPeliculas(string? Pelicula, List<FuncionCompletaRespuesta> result)
         {
             return await _Contexto.Funciones.Include(s => s.Peliculas)
                 .ThenInclude(s => s.Generos)
                 .Include(s => s.Tickets)
-                .Include(s => s.Salas).Where(S => S.PeliculaId == id).ToListAsync();
+                .Include(s => s.Salas).Where(S => S.Peliculas.Titulo.Contains(Pelicula)).ToListAsync();
         }
 
-        async Task<List<Funciones>> IConsultasFunciones.ListarGeneros(int? id, List<CarteleraDTO> result)
+        async Task<List<Funciones>> IConsultasFunciones.ListarGeneros(int? id, List<FuncionCompletaRespuesta> result)
         {
             return await _Contexto.Funciones.Include(s => s.Salas)
                 .Include(s => s.Tickets)
                 .Include(s => s.Peliculas)
                 .ThenInclude(s => s.Generos).Where(S => S.Peliculas.Generos.GenerosId == id).ToListAsync();
 
+        }
+
+        async Task<Funciones> IConsultasFunciones.RetornarRegistro()
+        {
+            return await _Contexto.Funciones.Include(s => s.Peliculas)
+                .ThenInclude(s => s.Generos)
+                .Include(s => s.Tickets)
+                .Include(s => s.Salas).OrderByDescending(s => s.FuncionesId).FirstOrDefaultAsync();
         }
 
         async Task<List<bool>> IConsultasFunciones.GetIDs(int IdPelicula, int IdSala)
@@ -73,20 +82,19 @@ namespace Infraestructura.Querys
 
         async Task<Funciones> IConsultasFunciones.GetIdFuncion(int id)
         {
-            Funciones func= await _Contexto.Funciones.Include(s => s.Peliculas).ThenInclude(s => s.Generos).Include(s => s.Salas).FirstOrDefaultAsync(s => s.FuncionesId == id);
-            return func;
+            return await _Contexto.Funciones.Include(s => s.Peliculas).ThenInclude(s => s.Generos).Include(s => s.Salas).FirstOrDefaultAsync(s => s.FuncionesId == id);
+            
         }
 
         async Task<bool> IConsultasFunciones.ComprobacionHoraria(int Salaid, DateTime Fecha, TimeSpan Horainicio)
         {
             TimeSpan HoraFinal = Horainicio + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30);
-            List<Funciones> list = _Contexto.Funciones.Where(s => s.SalaId == Salaid && s.Fecha == Fecha).AsEnumerable()
-                .Where(s => s.Hora + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30) > Horainicio && Horainicio >= s.Hora
-                 || s.Hora + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30) >= HoraFinal && HoraFinal > s.Hora).ToList(); 
+            List<Funciones> list =  _Contexto.Funciones.Where(s => s.SalaId == Salaid && s.Fecha.Day == Fecha.Day && s.Fecha.Month == Fecha.Month).AsEnumerable()
+                                                      .Where(s => s.Hora + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30) > Horainicio && Horainicio >= s.Hora
+                                                      || s.Hora + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30) >= HoraFinal && HoraFinal > s.Hora).ToList(); 
             if (list.Count() == 0) return false;
             else return true; 
         }
 
-        
     }
 }

@@ -7,6 +7,6 @@ namespace Aplicación.Interfaces.Infraestructura
     {
         Task AgregarFuncion(Funciones funcion);
 
-        Task<Funciones> AgregarTicket(Tickets ticket);
+        Task<Tickets> AgregarTicket(Tickets ticket);
     }
 }

@@ -7,17 +7,17 @@ namespace Aplicacion.Interfaces.Aplicacion
 {
     public interface IServiciosFunciones
     {
-        Task<List<CarteleraDTO>> GetFuncionesDia(DateTime? dia, List<CarteleraDTO> result);
-        Task<List<CarteleraDTO>> GetFuncionesNombrePelicula(int? id, List<CarteleraDTO> result);
-        Task<List<CarteleraDTO>> GetFuncionesGenero(int? id, List<CarteleraDTO> result);
-        Task<List<CarteleraDTO>> GetFuncionesDTO();
-        Task<List<Cartelera>> GetCartelera(List<CarteleraDTO> Funciones);
-        Task AddFunciones(FuncionesDTO funcion);
+        Task<List<FuncionCompletaRespuesta>> GetFuncionesDia(DateTime dia, List<FuncionCompletaRespuesta> result);
+        Task<List<FuncionCompletaRespuesta>> GetFuncionesNombrePelicula(string? Pelicula, List<FuncionCompletaRespuesta> result);
+        Task<List<FuncionCompletaRespuesta>> GetFuncionesGenero(int? id, List<FuncionCompletaRespuesta> result);
+        Task<List<FuncionCompletaRespuesta>> GetFuncionesRespuesta();
+        Task<List<FuncionCompletaRespuesta>> GetCartelera(List<FuncionCompletaRespuesta> Funciones);
+        Task<FuncionCompletaRespuesta> AddFunciones(FuncionesDTO funcion);
         Task<List<bool>> GetId(int IdPelicula, int IdSala);
         Task<Funciones> ComprobarFunciones(int id);
-        Task<bool> EliminarFuncion(Funciones funcion);
+        Task<EliminarFuncionResponse> EliminarFuncion(Funciones funcion);
         Task<bool> ComprobarHorario(int Salaid, DateTime Fecha, TimeSpan Hora);
-        Task<TicketRespuesta> GenerarTicket(TicketDTO ticket);
-        Task<FuncionRespuesta> GetDatosFuncion(int id);
+        Task<TicketRespuesta> GenerarTicket(int ID, TicketDTO ticket);
+        Task<FuncionCompletaRespuesta> GetDatosFuncion(int id);
     }
 }

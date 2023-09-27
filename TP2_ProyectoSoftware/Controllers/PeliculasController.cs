@@ -1,5 +1,6 @@
 ﻿using Aplicacion.DTO;
 using Aplicacion.Interfaces.Aplicacion;
+using Aplicacion.RespuestasHTTP;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,9 @@ namespace TP2_ProyectoSoftware.Controllers
                 return NotFound("El ID ingresado no se encuntra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido");
             }
 
-            return Ok(await _Servicio.DatosPelicula(ID));
+            PeliculaCompletaResponse pelicula = await _Servicio.DatosPelicula(ID);
+            if (pelicula == null) return NotFound("No se encuentran proximas funciones para la pelicula buscada");
+            return Ok(pelicula);
         }
 
         [HttpPut("{ID}")]
@@ -43,17 +46,19 @@ namespace TP2_ProyectoSoftware.Controllers
                     return NotFound("El ID ingresado no se encuntra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido");
                 }
 
-            if (await _Servicio.ConsultarNombre(pelicula.Titulo))
+            if (await _Servicio.ConsultarNombre(ID,pelicula))
                 {
                     return BadRequest("Ya existe una pelicula con ese titulo, asegurese de escribir correctamente los datos de una pelicula que no se encuentre registrada en la base de datos");
                 }
 
-            if (!await _Servicio.ActulizarPelicula(ID, pelicula))
+            PeliculaCompletaResponse peli = await _Servicio.ActulizarPelicula(ID, pelicula);
+
+            if (peli == null)
                 {
-                    return NotFound("No se han podido actualizar los datos, compruebe que el genero exista en la base de datos");
+                    return NotFound("No se han podido actualizar los datos, por favor ingrese correctamente el id de género");
                 }
             
-            return Created("Los datos se han actualizado correctamente",pelicula); 
+            return Ok(pelicula); 
         }
 
     }

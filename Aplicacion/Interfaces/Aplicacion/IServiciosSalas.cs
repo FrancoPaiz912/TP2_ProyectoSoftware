@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aplicacion.RespuestasHTTP;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Aplicacion.Interfaces.Aplicacion
 {
     public interface IServiciosSalas
     {
-        Task<int> CapacidadDisponible(int idFuncion);
+        Task<AsientosResponse> CapacidadDisponible(int idFuncion);
     }
 }

@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aplicacion.DTO
+namespace Aplicacion.RespuestasHTTP
 {
-    public class FuncionesDTO
+    public class EliminarFuncionResponse
     {
-        public int PeliculaId { get; set; }
-        public int SalaId { get; set; }
+        public int FuncionId { get; set; }
         public DateTime Fecha { get; set; }
-        public string Hora { get; set; }
+        public TimeSpan Horario { get; set; }
     }
 }

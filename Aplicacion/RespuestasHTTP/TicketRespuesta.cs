@@ -8,12 +8,8 @@ namespace Aplicacion.RespuestasHTTP
 {
     public class TicketRespuesta
     {
-        public string Usuario { get; set; }
-        public string Titulo { get; set; }
-        public string Sinopsis { get; set; }
-        public DateTime Fecha { get; set; }
-        public TimeSpan Hora { get; set; }
-        public string Sala { get; set; }
-        public string genero { get; set; }
+        public List<Guid> tickets { get; set; }
+        public FuncionCompletaRespuesta Funciones { get; set; }
+        public string usuario { get; set; }
     }
 }

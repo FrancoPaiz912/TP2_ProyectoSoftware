@@ -1,4 +1,5 @@
 ﻿using Aplicacion.DTO;
+using Aplicacion.RespuestasHTTP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace Aplicacion.Interfaces.Aplicacion
 {
     public interface IServiciosPeliculas
     {
-        Task<bool> ConsultarNombre(string nombre);
+        Task<bool> ConsultarNombre(int ID, PeliculaDTO nombre);
         Task<bool> ComprobarId(int id);
-        Task<bool> ActulizarPelicula(int Id, PeliculaDTO peli);
+        Task<PeliculaCompletaResponse> ActulizarPelicula(int Id, PeliculaDTO peli);
         Task<string> LimitarCaracteres(PeliculaDTO pelicula);
-        Task<PeliculaDTO> DatosPelicula(int id);
+        Task<PeliculaCompletaResponse> DatosPelicula(int id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Aplicacion.Interfaces.Infraestructura;
+﻿using Aplicacion.DTO;
+using Aplicacion.Interfaces.Infraestructura;
 using Dominio;
 using Infraestructura.EstructuraDB;
 using Microsoft.EntityFrameworkCore;
@@ -20,9 +21,9 @@ namespace Infraestructura.Consultas_DB
             _Contexto = contexto;
         }
 
-        async Task<bool> IConsultasPeliculas.ComprobarNombre(string nombre)
+        async Task<bool> IConsultasPeliculas.ComprobarNombre(int ID, PeliculaDTO peli)
         {
-            if (await _Contexto.Peliculas.FirstOrDefaultAsync(s => s.Titulo == nombre) == null)
+            if (await _Contexto.Peliculas.FirstOrDefaultAsync(s => s.Titulo == peli.Titulo && s.Peliculasid != ID) == null)
             {
                 return false;
             }
@@ -38,9 +39,9 @@ namespace Infraestructura.Consultas_DB
             else return false;
         }
 
-        async Task<Peliculas> IConsultasPeliculas.RecuperarPelicula(int id)
+        async Task<List<Funciones>> IConsultasPeliculas.RecuperarPelicula(int id)
         {
-            return await _Contexto.Peliculas.Include(s => s.Generos).Where(s => s.Peliculasid == id).FirstOrDefaultAsync();
+            return await _Contexto.Funciones.Include(s => s.Peliculas).ThenInclude(s => s.Generos).Where(s => s.Peliculas.Peliculasid == id).ToListAsync();
         }
     }
 }

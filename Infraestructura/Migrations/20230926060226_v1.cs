@@ -95,8 +95,7 @@ namespace Infraestructura.Migrations
                 name: "Tickets",
                 columns: table => new
                 {
-                    TicketsId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TicketsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FuncionId = table.Column<int>(type: "int", nullable: false),
                     Usuario = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },

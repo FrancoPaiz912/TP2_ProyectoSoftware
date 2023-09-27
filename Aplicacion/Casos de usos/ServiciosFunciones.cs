@@ -7,6 +7,7 @@ using Aplicacion.RespuestasHTTP;
 using Dominio;
 using System;
 using System.Security.Cryptography;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aplicacion.Casos_de_usos
 {
@@ -23,32 +24,40 @@ namespace Aplicacion.Casos_de_usos
         }
 
         //Gets
-        async Task<List<CarteleraDTO>> IServiciosFunciones.GetFuncionesDTO()
+        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetFuncionesRespuesta()
         {
             List<Funciones> Funciones = await _Consultas.ListarFunciones();
-            List<CarteleraDTO> result= new List<CarteleraDTO> ();
+            List<FuncionCompletaRespuesta> result= new List<FuncionCompletaRespuesta> ();
             foreach (var item in Funciones)
             {
-                result.Add(new CarteleraDTO
+                result.Add(new FuncionCompletaRespuesta
                 {
-                    FuncionesId = item.FuncionesId,
-                    PeliculaId = item.Peliculas.Peliculasid,
-                    GenerosId = item.Peliculas.Generos.GenerosId,
-                    Titulo = item.Peliculas.Titulo,
-                    Sinopsis = item.Peliculas.Sinopsis,
-                    Poster = item.Peliculas.Poster,
-                    Trailer = item.Peliculas.Trailer,
-                    Sala = item.Salas.Nombre,
-                    Capacidad = item.Salas.Capacidad,
+                    FuncionId = item.FuncionesId,
+                    Pelicula = new PeliculaRespuesta
+                    {
+                        Peliculaid = item.PeliculaId,
+                        Titulo = item.Peliculas.Titulo,
+                        Poster = item.Peliculas.Poster,
+                        Genero = new GeneroRespuesta
+                        {
+                            Id = item.Peliculas.Generos.GenerosId,
+                            Nombre = item.Peliculas.Generos.Nombre
+                        },
+                    },
+                    Sala = new SalaRespuesta
+                    {
+                        Id = item.Salas.SalasId,
+                        Nombre = item.Salas.Nombre,
+                        Capacidad = item.Salas.Capacidad,
+                    },
                     Fecha = item.Fecha,
-                    Hora = item.Hora,
-                    genero = item.Peliculas.Generos.Nombre,
+                    Horario = item.Hora,
                 });
             }
             return result;
         }
 
-        async Task<List<CarteleraDTO>> IServiciosFunciones.GetFuncionesDia(DateTime? dia, List<CarteleraDTO> funciones)
+        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetFuncionesDia(DateTime dia, List<FuncionCompletaRespuesta> funciones)
         {
             List<Funciones> result = new List<Funciones>();
             if (result.Count() == 0 && dia != null)
@@ -56,20 +65,28 @@ namespace Aplicacion.Casos_de_usos
                 result = await _Consultas.ListarFecha(dia, funciones);
                 foreach (var item in result)
                 {
-                    funciones.Add(new CarteleraDTO
+                    funciones.Add(new FuncionCompletaRespuesta
                     {
-                        FuncionesId = item.FuncionesId,
-                        PeliculaId = item.Peliculas.Peliculasid,
-                        GenerosId = item.Peliculas.Generos.GenerosId,
-                        Titulo = item.Peliculas.Titulo,
-                        Sinopsis = item.Peliculas.Sinopsis,
-                        Poster = item.Peliculas.Poster,
-                        Trailer = item.Peliculas.Trailer,
-                        Sala = item.Salas.Nombre,
-                        Capacidad = item.Salas.Capacidad,
+                        FuncionId = item.FuncionesId,
+                        Pelicula = new PeliculaRespuesta
+                        {
+                            Peliculaid = item.PeliculaId,
+                            Titulo = item.Peliculas.Titulo,
+                            Poster = item.Peliculas.Poster,
+                            Genero = new GeneroRespuesta
+                            {
+                                Id = item.Peliculas.Generos.GenerosId,
+                                Nombre = item.Peliculas.Generos.Nombre
+                            },
+                        },
+                        Sala = new SalaRespuesta
+                        {
+                            Id = item.Salas.SalasId,
+                            Nombre = item.Salas.Nombre,
+                            Capacidad = item.Salas.Capacidad,
+                        },
                         Fecha = item.Fecha,
-                        Hora = item.Hora,
-                        genero = item.Peliculas.Generos.Nombre,
+                        Horario = item.Hora,
                     });
                 }
                 return funciones;
@@ -81,40 +98,48 @@ namespace Aplicacion.Casos_de_usos
             }
         }
 
-        async Task<List<CarteleraDTO>> IServiciosFunciones.GetFuncionesNombrePelicula(int? PeliculaID, List<CarteleraDTO> funciones)
+        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetFuncionesNombrePelicula(string? Pelicula, List<FuncionCompletaRespuesta> funciones)
         {
             List<Funciones> result = new List<Funciones>();
-            if (funciones.Count() == 0 && PeliculaID != null)
+            if (funciones.Count() == 0 && Pelicula != null)
             {
-                result = await _Consultas.ListarPeliculas(PeliculaID, funciones);
+                result = await _Consultas.ListarPeliculas(Pelicula, funciones);
                 foreach (var item in result)
                 {
-                    funciones.Add(new CarteleraDTO
+                    funciones.Add(new FuncionCompletaRespuesta
                     {
-                        FuncionesId = item.FuncionesId,
-                        PeliculaId = item.Peliculas.Peliculasid,
-                        GenerosId = item.Peliculas.Generos.GenerosId,
-                        Titulo = item.Peliculas.Titulo,
-                        Sinopsis = item.Peliculas.Sinopsis,
-                        Poster = item.Peliculas.Poster,
-                        Trailer = item.Peliculas.Trailer,
-                        Sala = item.Salas.Nombre,
-                        Capacidad = item.Salas.Capacidad,
+                        FuncionId = item.FuncionesId,
+                        Pelicula = new PeliculaRespuesta
+                        {
+                            Peliculaid = item.PeliculaId,
+                            Titulo = item.Peliculas.Titulo,
+                            Poster = item.Peliculas.Poster,
+                            Genero = new GeneroRespuesta
+                            {
+                                Id = item.Peliculas.Generos.GenerosId,
+                                Nombre = item.Peliculas.Generos.Nombre
+                            },
+                        },
+                        Sala = new SalaRespuesta
+                        {
+                            Id = item.Salas.SalasId,
+                            Nombre = item.Salas.Nombre,
+                            Capacidad = item.Salas.Capacidad,
+                        },
                         Fecha = item.Fecha,
-                        Hora = item.Hora,
-                        genero = item.Peliculas.Generos.Nombre,
+                        Horario = item.Hora,
                     });
                 }
                 return funciones;
             }
             else
             {
-                funciones = funciones.Where(s => s.PeliculaId == PeliculaID).ToList();  
+                funciones = funciones.Where(s => s.Pelicula.Titulo.Contains(Pelicula)).ToList();  
                 return funciones;
             }
         }
 
-        async Task<List<CarteleraDTO>> IServiciosFunciones.GetFuncionesGenero(int? GeneroID, List<CarteleraDTO> funciones)
+        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetFuncionesGenero(int? GeneroID, List<FuncionCompletaRespuesta> funciones)
         {
             List<Funciones> result = new List<Funciones>();
             if (funciones.Count() == 0 && GeneroID != null)
@@ -122,62 +147,105 @@ namespace Aplicacion.Casos_de_usos
                 result = await _Consultas.ListarGeneros(GeneroID, funciones);
                 foreach (var item in result)
                 {
-                    funciones.Add(new CarteleraDTO
+                    funciones.Add(new FuncionCompletaRespuesta
                     {
-                        FuncionesId = item.FuncionesId,
-                        PeliculaId = item.Peliculas.Peliculasid,
-                        GenerosId = item.Peliculas.Generos.GenerosId,
-                        Titulo = item.Peliculas.Titulo,
-                        Sinopsis = item.Peliculas.Sinopsis,
-                        Poster = item.Peliculas.Poster,
-                        Trailer = item.Peliculas.Trailer,
-                        Sala = item.Salas.Nombre,
-                        Capacidad = item.Salas.Capacidad,
+                        FuncionId = item.FuncionesId,
+                        Pelicula = new PeliculaRespuesta
+                        {
+                            Peliculaid = item.PeliculaId,
+                            Titulo = item.Peliculas.Titulo,
+                            Poster = item.Peliculas.Poster,
+                            Genero = new GeneroRespuesta
+                            {
+                                Id = item.Peliculas.Generos.GenerosId,
+                                Nombre = item.Peliculas.Generos.Nombre
+                            },
+                        },
+                        Sala = new SalaRespuesta
+                        {
+                            Id = item.Salas.SalasId,
+                            Nombre = item.Salas.Nombre,
+                            Capacidad = item.Salas.Capacidad,
+                        },
                         Fecha = item.Fecha,
-                        Hora = item.Hora,
-                        genero = item.Peliculas.Generos.Nombre,
+                        Horario = item.Hora,
                     });
                 }
                 return funciones;
             }
             else
             {
-                funciones = funciones.Where(s => s.GenerosId == GeneroID).ToList();
+                funciones = funciones.Where(s => s.Pelicula.Genero.Id == GeneroID).ToList();
                 return funciones;
             }
         }
 
-        async Task<List<Cartelera>> IServiciosFunciones.GetCartelera(List<CarteleraDTO> Funciones)
+        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetCartelera(List<FuncionCompletaRespuesta> funciones)
         {
-            List<Cartelera> cartelera = new List<Cartelera>();
-            foreach (var item in Funciones)
+            List<FuncionCompletaRespuesta> cartelera = new List<FuncionCompletaRespuesta>();
+            foreach (var item in funciones)
             {
-                cartelera.Add(new Cartelera
+                   cartelera.Add(new FuncionCompletaRespuesta
                 {
-                    Titulo = item.Titulo,
-                    Sinopsis = item.Sinopsis,
-                    Poster = item.Poster,
-                    Trailer = item.Trailer,
-                    Sala = item.Sala,
-                    Capacidad = item.Capacidad,
-                    Fecha = item.Fecha.Date.ToString("dd/MM/yyyy"),
-                    Hora = item.Hora.ToString(),
-                    genero = item.genero,
+                    FuncionId = item.FuncionId,
+                    Pelicula = new PeliculaRespuesta
+                    {
+                        Peliculaid = item.Pelicula.Peliculaid,
+                        Titulo = item.Pelicula.Titulo,
+                        Poster = item.Pelicula.Poster,
+                        Genero = new GeneroRespuesta
+                        {
+                            Id = item.Pelicula.Genero.Id,
+                            Nombre = item.Pelicula.Genero.Nombre
+                        },
+                    },
+                    Sala = new SalaRespuesta
+                    {
+                        Id = item.Sala.Id,
+                        Nombre = item.Sala.Nombre,
+                        Capacidad = item.Sala.Capacidad,
+                    },
+                    Fecha = item.Fecha,
+                    Horario = item.Horario,
                 });
             }
             return cartelera;
         }
 
-        async Task IServiciosFunciones.AddFunciones(FuncionesDTO funcion)
+        async Task<FuncionCompletaRespuesta> IServiciosFunciones.AddFunciones(FuncionesDTO funcion)
         {
-            
             await _Agregar.AgregarFuncion(new Funciones
             {
                 PeliculaId = funcion.PeliculaId,
                 SalaId = funcion.SalaId,
-                Fecha = DateTime.Parse(funcion.Fecha),
+                Fecha = funcion.Fecha,
                 Hora = DateTime.Parse(funcion.Hora).TimeOfDay,
             });
+
+            Funciones func= await _Consultas.RetornarRegistro();
+            return new FuncionCompletaRespuesta
+            {
+                FuncionId = func.FuncionesId,
+                Pelicula = new PeliculaRespuesta
+                {
+                    Peliculaid = func.PeliculaId,
+                    Titulo = func.Peliculas.Titulo,
+                    Poster = func.Peliculas.Poster,
+                    Genero = new GeneroRespuesta
+                    {
+                        Id = func.Peliculas.Generos.GenerosId,
+                        Nombre = func.Peliculas.Generos.Nombre
+                    },
+                },
+                Sala = new SalaRespuesta
+                {
+                    Id = func.Salas.SalasId,
+                    Nombre = func.Salas.Nombre,
+                    Capacidad = func.Salas.Capacidad,
+                },
+                Fecha = func.Fecha,
+                Horario = func.Hora,
+            };
         }
 
         async Task<List<bool>> IServiciosFunciones.GetId(int IdPelicula,int IdSala)
@@ -190,9 +258,18 @@ namespace Aplicacion.Casos_de_usos
             return await _Consultas.GetIdFuncion(id);
         }
 
-        async Task<bool> IServiciosFunciones.EliminarFuncion(Funciones funcion)
+        async Task<EliminarFuncionResponse> IServiciosFunciones.EliminarFuncion(Funciones funcion)
         {
-            return await _Eliminar.RemoverFuncion(funcion);
+            if (await _Eliminar.RemoverFuncion(funcion))
+            {
+                return new EliminarFuncionResponse
+                {
+                    FuncionId = funcion.FuncionesId,
+                    Fecha = funcion.Fecha,
+                    Horario = funcion.Hora,
+                };
+            }
+            else return null;
         }
 
         async Task<bool> IServiciosFunciones.ComprobarHorario(int Salaid, DateTime Fecha, TimeSpan Hora)
@@ -200,43 +277,77 @@ namespace Aplicacion.Casos_de_usos
             return await _Consultas.ComprobacionHoraria(Salaid, Fecha, Hora);
         }
 
-        async Task<TicketRespuesta> IServiciosFunciones.GenerarTicket(TicketDTO ticket)
+        async Task<TicketRespuesta> IServiciosFunciones.GenerarTicket(int ID, TicketDTO ticket)
         {
+            Tickets Response= new Tickets();
+            List<Guid> ListaTickets = new List<Guid>();
             //Crear ticket y devolver datos de respuesta.
-            Funciones Response = await _Agregar.AgregarTicket(new Tickets
+            for (int i = 0; i < ticket.Cantidad; i++)
             {
-                FuncionId = ticket.FuncionId,
-                Usuario = ticket.Usuario,
-            });
+                Response = await _Agregar.AgregarTicket(new Tickets
+                {
+                    FuncionId = ID,
+                    Usuario = ticket.Usuario,
+                });
+                ListaTickets.Add(Response.TicketsId); //Ver porque almacena siempre el mismo código de ticket.
+            }
 
             return new TicketRespuesta
             {
-                Usuario = ticket.Usuario,
-                Titulo = Response.Peliculas.Titulo,
-                Sinopsis = Response.Peliculas.Sinopsis,
-                Fecha = Response.Fecha,
-                Hora = Response.Hora,
-                Sala = Response.Salas.Nombre,
-                genero = Response.Peliculas.Generos.Nombre,
+                tickets = ListaTickets,
+                Funciones = new FuncionCompletaRespuesta
+                {
+                    FuncionId = Response.Funciones.PeliculaId,
+                    Pelicula = new PeliculaRespuesta
+                    {
+                        Peliculaid = Response.Funciones.PeliculaId,
+                        Titulo = Response.Funciones.Peliculas.Titulo,
+                        Poster = Response.Funciones.Peliculas.Poster,
+                        Genero = new GeneroRespuesta
+                        {
+                            Id = Response.Funciones.Peliculas.Generos.GenerosId,
+                            Nombre = Response.Funciones.Peliculas.Generos.Nombre
+                        },
+                    },
+                    Sala = new SalaRespuesta
+                    {
+                        Id = Response.Funciones.Salas.SalasId,
+                        Nombre = Response.Funciones.Salas.Nombre,
+                        Capacidad = Response.Funciones.Salas.Capacidad,
+                    },
+                    Fecha = Response.Funciones.Fecha,
+                    Horario = Response.Funciones.Hora,
+                },
+                usuario = Response.Usuario,
             };
         }
 
-        async Task<FuncionRespuesta> IServiciosFunciones.GetDatosFuncion(int id)
+        async Task<FuncionCompletaRespuesta> IServiciosFunciones.GetDatosFuncion(int id)
         {
             Funciones funcion = await _Consultas.GetIdFuncion(id);
             if (funcion != null)
             {
-                return new FuncionRespuesta
+                return new FuncionCompletaRespuesta
                 {
-                    Titulo = funcion.Peliculas.Titulo,
-                    Sinopsis = funcion.Peliculas.Sinopsis,
-                    Poster = funcion.Peliculas.Poster,
-                    Trailer = funcion.Peliculas.Trailer,
-                    Sala = funcion.Salas.Nombre,
-                    Capacidad = funcion.Salas.Capacidad, //Podrías devolver disponibilidad
-                    Fecha = funcion.Fecha.Date,
-                    Hora = funcion.Hora,
-                    genero = funcion.Peliculas.Generos.Nombre,
+                    FuncionId = funcion.FuncionesId,
+                    Pelicula = new PeliculaRespuesta
+                    {
+                        Peliculaid = funcion.PeliculaId,
+                        Titulo = funcion.Peliculas.Titulo,
+                        Poster = funcion.Peliculas.Poster,
+                        Genero = new GeneroRespuesta
+                        {
+                            Id = funcion.Peliculas.Generos.GenerosId,
+                            Nombre = funcion.Peliculas.Generos.Nombre
+                        },
+                    },
+                    Sala = new SalaRespuesta{
+                        Id = funcion.Salas.SalasId,
+                        Nombre = funcion.Salas.Nombre,
+                        Capacidad = funcion.Salas.Capacidad,
+                    },
+                    Fecha = funcion.Fecha,
+                    Horario = funcion.Hora,
                 };
             }
             return null; 

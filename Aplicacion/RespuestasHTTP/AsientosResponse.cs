@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Aplicacion.RespuestasHTTP
 {
-    public class FuncionRespuesta
+    public class AsientosResponse
     {
-        public int FuncionId { get; set; }
-        public DateTime Fecha { get; set; }
-        public TimeSpan Horario { get; set; }
+        public int Cantidad { get; set; }
     }
 }

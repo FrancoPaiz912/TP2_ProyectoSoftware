@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aplicacion.RespuestasHTTP;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,7 @@ namespace Aplicacion.DTO
 {
     public class TicketDTO
     {
-        public int FuncionId { get; set; }
+        public int Cantidad { get; set; }
         public string Usuario { get; set; }
-
     }
 }
