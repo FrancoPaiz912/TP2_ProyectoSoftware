@@ -24,11 +24,10 @@ namespace Infraestructura.Consultas_DB
         async Task<Peliculas> IActualizarPeliculas.ActualizarPelicula(int Id, PeliculaDTO peli)
         {
             Peliculas pelicula = await _Contexto.Peliculas.Include(s=> s.Funciones).Include(s => s.Generos).FirstOrDefaultAsync(s => s.Peliculasid == Id);
-            //Peliculas funciones = pelicula.FirstOrDefault();
             Generos genero =  _Contexto.Generos.FirstOrDefault(s=> s.GenerosId == peli.Genero);
             if (pelicula != null && genero != null) 
             {
-                pelicula.Titulo=peli.Titulo;
+                pelicula.Titulo=peli.Titulo.ToUpper();
                 pelicula.Sinopsis=peli.Sinopsis;
                 pelicula.Poster=peli.Poster;
                 pelicula.Trailer=peli.Trailer;

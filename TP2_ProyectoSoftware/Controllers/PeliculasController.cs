@@ -23,11 +23,16 @@ namespace TP2_ProyectoSoftware.Controllers
         {
             if (await _Servicio.ComprobarId(ID))
             {
-                return NotFound("El ID ingresado no se encuntra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido");
+                var respuesta = new { Motivo = "El ID ingresado no se encuentra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido" };
+                return NotFound(respuesta);
             }
 
             PeliculaCompletaResponse pelicula = await _Servicio.DatosPelicula(ID);
-            if (pelicula == null) return NotFound("No se encuentran proximas funciones para la pelicula buscada");
+            if (pelicula == null)
+            {
+                var respuesta = new { Motivo = "No se encuentran proximas funciones para la pelicula buscada" };
+                return NotFound(respuesta);
+            }
             return Ok(pelicula);
         }
 
@@ -38,24 +43,28 @@ namespace TP2_ProyectoSoftware.Controllers
 
             if (result.Length > 0)
             {
-                return BadRequest("Ha excedido el límite de caracteres para " + result);
+                var respuesta = new { Motivo = "Ha excedido el límite de caracteres para " + result };
+                return BadRequest(respuesta);
             }
 
             if (await _Servicio.ComprobarId(ID))
                 {
-                    return NotFound("El ID ingresado no se encuntra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido");
+                var respuesta = new { Motivo = "El ID ingresado no se encuntra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido"};
+                return NotFound(respuesta);
                 }
 
             if (await _Servicio.ConsultarNombre(ID,pelicula))
                 {
-                    return BadRequest("Ya existe una pelicula con ese titulo, asegurese de escribir correctamente los datos de una pelicula que no se encuentre registrada en la base de datos");
+                var respuesta = new { Motivo = "Ya existe una pelicula con ese titulo, asegurese de escribir correctamente los datos de una pelicula que no se encuentre registrada en la base de datos" };
+                return Conflict(respuesta);
                 }
 
             PeliculaCompletaResponse peli = await _Servicio.ActulizarPelicula(ID, pelicula);
 
             if (peli == null)
                 {
-                    return NotFound("No se han podido actualizar los datos, por favor ingrese correctamente el id de género");
+                var respuesta = new { Motivo = "No se han podido actualizar los datos, por favor ingrese correctamente el id de género"};
+                return NotFound(respuesta);
                 }
             
             return Ok(pelicula); 

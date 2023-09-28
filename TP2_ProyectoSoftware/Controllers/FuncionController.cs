@@ -28,9 +28,8 @@ namespace TP2_ProyectoSoftware.Controllers
             FuncionCompletaRespuesta funcion = await _ServicioFunciones.GetDatosFuncion(ID);
             if (funcion == null)
             {
-                Response.Headers.Add("Motivo", "El ID ingresado no coincide con ninguna funcion registrada en la base de datos, intente con otra ID.");
-
-                return NoContent();
+                var respuesta = new { Motivo = "El ID ingresado no coincide con ninguna funcion registrada en la base de datos, intente con otra ID." };
+                return NotFound(respuesta);
             }
             return Ok(funcion);
         }
@@ -69,43 +68,54 @@ namespace TP2_ProyectoSoftware.Controllers
 
                 if (result.Count() == 0)
                 {
-                    Response.Headers.Add("Motivo", "No se encontraron proximas funciones.");
-                    return NoContent();
+                    var respuesta = new { Motivo = "No se encontraron proximas funciones." };
+                    return NotFound(respuesta);
                 }
                 else
                 {
-                    return new JsonResult(await _ServicioFunciones.GetCartelera(result)) { StatusCode = 200}; //Luego solucionar el "result" (pasar los condicionales a capa de aplicación)
-                } //Ver el mensaje que aparece por debajo de la lista de funciones.
+                    return new JsonResult(await _ServicioFunciones.GetCartelera(result)) { StatusCode = 200}; 
+                } 
             }catch (FormatException)
             {
-                return BadRequest("Por favor, ingrese una fecha válida");
+                var respuesta = new { Motivo = "Por favor, ingrese una fecha válida." };
+                return BadRequest(respuesta);
             }catch (Exception)
             {
-                return BadRequest("Ingrese los datos correctamente");
+                var respuesta = new { Motivo = "Ingrese los datos correctamente." };
+                return BadRequest(respuesta);
             }
         }
 
         [HttpPost]
         public async Task<ActionResult> CrearFunciones(FuncionesDTO funcion)
         {
-            List<FuncionCompletaRespuesta> Retorno = new List<FuncionCompletaRespuesta>();
             List<bool> result = await _ServicioFunciones.GetId(funcion.PeliculaId, funcion.SalaId);
-            if (result[0] == false) return BadRequest("No existe una pelicula asociada a ese ID");
-            if (result[1] == false) return BadRequest("No existe una Sala asociada a ese ID");
+            if (result[0] == false)
+            {
+                var respuesta = new { Motivo = "No existe una pelicula asociada a ese ID" };
+                return BadRequest(respuesta);
+            }
+            if (result[1] == false)
+            {
+                var respuesta = new { Motivo = "No existe una Sala asociada a ese ID" };
+                return BadRequest(respuesta);
+            }
             try
             {
                 TimeSpan Comprobar2 = DateTime.Parse(funcion.Hora).TimeOfDay;
-            if (await _ServicioFunciones.ComprobarHorario(funcion.SalaId,funcion.Fecha,Comprobar2))
-            {
-                return BadRequest("Horario ocupado, por favor ingrese otro");
-            }
+                if (await _ServicioFunciones.ComprobarHorario(funcion.SalaId,funcion.Fecha,Comprobar2))
+                {
+                    var respuesta = new { Motivo = "Horario ocupado, por favor ingrese otro" };
+                    return Conflict(respuesta);
+                }
             }
             catch (FormatException)
             {
-                return BadRequest("Por favor ingrese una fecha y/o día valido");
+                var respuesta = new { Motivo = "Por favor ingrese una fecha y/o día valido" };
+                return BadRequest(respuesta);
             }
 
-            return new JsonResult(await _ServicioFunciones.AddFunciones(funcion));
+            return new JsonResult(await _ServicioFunciones.AddFunciones(funcion)); //Arreglar el mal ingreso del formato horario
         }
 
         [HttpDelete("{ID}")]
@@ -116,10 +126,13 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 EliminarFuncionResponse funcion = await _ServicioFunciones.EliminarFuncion(func);
                 if (funcion != null) return Ok(funcion);
-                else return BadRequest("La funcion que desea eliminar ya tiene tickets vendidos por lo que no se puede eliminar.");
+                else {
+                    var respuest = new { Motivo = "La funcion que desea eliminar ya tiene tickets vendidos por lo que no se puede eliminar."};
+                    return Conflict(respuest); 
+                }
             }
-             Response.Headers.Add("Motivo", "El ID ingresado no corresponde a ninguna Funcion registrada en la base de datos.");
-            return NoContent(); 
+            var respuesta = new { Motivo = "El ID ingresado no corresponde a ninguna Funcion registrada en la base de datos."};
+            return NotFound(respuesta); 
         }
 
         [HttpGet("{ID}/Tickets")]
@@ -127,33 +140,28 @@ namespace TP2_ProyectoSoftware.Controllers
         {
             if (await _ServicioFunciones.ComprobarFunciones(ID) == null)
             {
-                return NotFound("Función no registrada en la base de datos");
+                var respuesta = new { Motivo = "Función no registrada en la base de datos"};
+                return NotFound(respuesta);
             }
-
             AsientosResponse TicketsDisponibles = await _ServicioSalas.CapacidadDisponible(ID);
-
-            if (TicketsDisponibles.Cantidad > 0)
-            {
-                return Ok(TicketsDisponibles);
-            }
-            Response.Headers.Add("Motivo", "Lo sentimos, ya no quedan entradas");
-            return NoContent();
+            return Ok(TicketsDisponibles);
         }
 
         [HttpPost("{ID}/Tickets")]
         public async Task<ActionResult> CrearTicket(int ID, TicketDTO Ticket)
         {
-            if (await _ServicioFunciones.ComprobarFunciones(ID) == null) //Comprobar que es menos costoso comprobar y devolver un booleano
+            if (await _ServicioFunciones.ComprobarFunciones(ID) == null) 
             {
-                return NotFound("Función no registrada en la base de datos");
+                var respuesta = new { Motivo = "Función no registrada en la base de datos"};
+                return NotFound(respuesta);
             }
 
             AsientosResponse Asientos = await _ServicioSalas.CapacidadDisponible(ID);
 
-            if (Asientos.Cantidad < 1)
+            if (Asientos.Cantidad < Ticket.Cantidad)
             {
-                Response.Headers.Add("Motivo", "No quedan más entradas disponibles");
-                return NoContent();
+                var respuesta = new { Motivo = "La cantidad de entradas solicitadas excedes a la cantidad de entradas disponibles"};
+                return BadRequest(respuesta);
             }
 
             return Ok(await _ServicioFunciones.GenerarTicket(ID,Ticket));

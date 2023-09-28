@@ -23,7 +23,7 @@ namespace Infraestructura.Consultas_DB
         {
             int result=  _Contexto.Funciones             
                         .Include(s => s.Tickets)
-                        .Include(s => s.Salas).Where(s => s.FuncionesId == idFuncion).Select(s => s.Salas.Capacidad - s.Tickets.Count()).FirstOrDefault();
+                        .Include(s => s.Salas).Where(s => s.FuncionesId == idFuncion).Select(s => s.Salas.Capacidad - s.Tickets.Count()).FirstOrDefault(); //No me descuenta los tickets
             return result;
         }
     }

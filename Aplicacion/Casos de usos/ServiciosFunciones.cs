@@ -281,7 +281,6 @@ namespace Aplicacion.Casos_de_usos
         {
             Tickets Response= new Tickets();
             List<Guid> ListaTickets = new List<Guid>();
-            //Crear ticket y devolver datos de respuesta.
             for (int i = 0; i < ticket.Cantidad; i++)
             {
                 Response = await _Agregar.AgregarTicket(new Tickets
@@ -289,7 +288,20 @@ namespace Aplicacion.Casos_de_usos
                     FuncionId = ID,
                     Usuario = ticket.Usuario,
                 });
-                ListaTickets.Add(Response.TicketsId); //Ver porque almacena siempre el mismo código de ticket.
+            }
+
+            int ignorar = -1; //Tiene que entrar en la primera, en la segunda no, y luego si.
+
+            foreach (var item in Response.Funciones.Tickets) //No sé porque siempre en la posición 1 del arreglo, se agrega un id viejardo
+            {
+                if (item.Usuario == ticket.Usuario)
+                {
+                    if (ignorar != 0)
+                    {
+                        ListaTickets.Add(item.TicketsId);
+                    }
+                };
+                ignorar++;
             }
 
             return new TicketRespuesta
