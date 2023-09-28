@@ -1,7 +1,7 @@
 ﻿
 namespace Aplicacion.RespuestasHTTP
 {
-    public class AsientosResponse
+    public class AsientosRespuesta
     {
         public int Cantidad { get; set; }
     }

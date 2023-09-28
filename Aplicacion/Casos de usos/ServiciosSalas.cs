@@ -12,9 +12,9 @@ namespace Aplicacion.Casos_de_usos
             _Consultas = Servicios;
         }
 
-        async Task<AsientosResponse> IServiciosSalas.CapacidadDisponible(int IdFuncion)
+        async Task<AsientosRespuesta> IServiciosSalas.CapacidadDisponible(int IdFuncion)
         {
-            return new AsientosResponse 
+            return new AsientosRespuesta 
             {
                 Cantidad = await _Consultas.CapacidadDisponible(IdFuncion), //Comprueba y devuelve la cantidad de entradas disponibles
             };

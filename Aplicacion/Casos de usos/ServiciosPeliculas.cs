@@ -27,21 +27,21 @@ namespace Aplicacion.Casos_de_usos
             return await _Consultas.ComprobarNombre(ID, nombre); //Comprobamos el nombre de la pelicula y retornamos un booleano acorde si existe o no
         }
 
-        async Task<PeliculaCompletaResponse> IServiciosPeliculas.ActulizarPelicula(int Id, PeliculaDTO peli)
+        async Task<PeliculaResponse> IServiciosPeliculas.ActulizarPelicula(int Id, PeliculaDTO peli)
         {
-            List<FuncionRespuesta> list = new List<FuncionRespuesta>();
+            List<InfoFuncionesParaPeliculaRespuesta> list = new List<InfoFuncionesParaPeliculaRespuesta>();
             Peliculas pelicula = await _Actualizar.ActualizarPelicula(Id, peli); //Se envian los datos para actualizar la pelicula en la base de datos
             if (pelicula != null) { 
                 foreach (var item in pelicula.Funciones)
                 {
-                    list.Add(new FuncionRespuesta
+                    list.Add(new InfoFuncionesParaPeliculaRespuesta
                     {
                         FuncionId = item.FuncionesId,
                         Fecha = item.Fecha,
                         Horario = item.Hora,
                     });
                 }
-                return new PeliculaCompletaResponse //Creamos el response de pelicula
+                return new PeliculaResponse //Creamos el response de pelicula
                 {
                     Peliculaid = pelicula.Peliculasid,
                     Titulo = pelicula.Titulo,
@@ -81,13 +81,13 @@ namespace Aplicacion.Casos_de_usos
             return "";
         }
 
-        async Task<PeliculaCompletaResponse> IServiciosPeliculas.DatosPelicula(int id)
+        async Task<PeliculaResponse> IServiciosPeliculas.DatosPelicula(int id)
         {
-            List<FuncionRespuesta> respuesta = new List<FuncionRespuesta>();
+            List<InfoFuncionesParaPeliculaRespuesta> respuesta = new List<InfoFuncionesParaPeliculaRespuesta>();
             Peliculas pelicula = await _Consultas.RecuperarPelicula(id); //Se busca en la base de datos la información de la pelicula incluyendo sus multiples funciones
             foreach (Funciones func in pelicula.Funciones) //Se agrega a una lista las funciones relacionadas a la pelicula.
             {
-                respuesta.Add(new FuncionRespuesta
+                respuesta.Add(new InfoFuncionesParaPeliculaRespuesta
                 {
                     FuncionId = func.FuncionesId,
                     Fecha = func.Fecha,
@@ -95,7 +95,7 @@ namespace Aplicacion.Casos_de_usos
                 });
             }
 
-            return new PeliculaCompletaResponse //Se fabrica el response de pelicula incluyendo la cantidad de funciones que tiene 
+            return new PeliculaResponse //Se fabrica el response de pelicula incluyendo la cantidad de funciones que tiene 
                 {
                     Peliculaid = pelicula.Peliculasid, //Al tener en la lista todas las funciones la misma informacion de pelicula se utiliza la de la posición 0 solamente para asegurarse que exista, pero podría ser cualquier otra que exista.
                     Titulo = pelicula.Titulo,

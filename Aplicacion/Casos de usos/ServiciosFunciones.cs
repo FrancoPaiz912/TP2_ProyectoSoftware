@@ -20,16 +20,16 @@ namespace Aplicacion.Casos_de_usos
         }
 
         //Gets
-        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetFuncionesRespuesta(string fecha, string titulo, int? Genero)
+        async Task<List<FuncionRespuesta>> IServiciosFunciones.GetFuncionesRespuesta(string fecha, string titulo, int? Genero)
         {
             List<Funciones> Funciones = await _Consultas.ListarFunciones(fecha, titulo, Genero); //Llamo a infraestructura
-            List<FuncionCompletaRespuesta> result = new List<FuncionCompletaRespuesta>();
+            List<FuncionRespuesta> result = new List<FuncionRespuesta>();
             foreach (var item in Funciones) //Si se tienen resultados, armo el response correspondiente y lo devuelvo.
             {
-                result.Add(new FuncionCompletaRespuesta
+                result.Add(new FuncionRespuesta
                 {
                     FuncionId = item.FuncionesId,
-                    Pelicula = new PeliculaRespuesta
+                    Pelicula = new InfoPeliculasParaFuncionesRespuesta
                     {
                         Peliculaid = item.PeliculaId,
                         Titulo = item.Peliculas.Titulo,
@@ -53,15 +53,15 @@ namespace Aplicacion.Casos_de_usos
             return result;
         }
 
-        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetCartelera(List<FuncionCompletaRespuesta> funciones)
+        async Task<List<FuncionRespuesta>> IServiciosFunciones.GetCartelera(List<FuncionRespuesta> funciones)
         {
-            List<FuncionCompletaRespuesta> cartelera = new List<FuncionCompletaRespuesta>();
+            List<FuncionRespuesta> cartelera = new List<FuncionRespuesta>();
             foreach (var item in funciones)
             {
-                   cartelera.Add(new FuncionCompletaRespuesta
+                   cartelera.Add(new FuncionRespuesta
                 {
                     FuncionId = item.FuncionId,
-                    Pelicula = new PeliculaRespuesta
+                    Pelicula = new InfoPeliculasParaFuncionesRespuesta
                     {
                         Peliculaid = item.Pelicula.Peliculaid,
                         Titulo = item.Pelicula.Titulo,
@@ -85,7 +85,7 @@ namespace Aplicacion.Casos_de_usos
             return cartelera;
         }
 
-        async Task<FuncionCompletaRespuesta> IServiciosFunciones.AddFunciones(FuncionesDTO funcion)
+        async Task<FuncionRespuesta> IServiciosFunciones.AddFunciones(FuncionesDTO funcion)
         {
             await _Agregar.AgregarFuncion(new Funciones
             {
@@ -96,10 +96,10 @@ namespace Aplicacion.Casos_de_usos
             });
 
             Funciones func= await _Consultas.RetornarRegistro();
-            return new FuncionCompletaRespuesta
+            return new FuncionRespuesta
             {
                 FuncionId = func.FuncionesId,
-                Pelicula = new PeliculaRespuesta
+                Pelicula = new InfoPeliculasParaFuncionesRespuesta
                 {
                     Peliculaid = func.PeliculaId,
                     Titulo = func.Peliculas.Titulo,
@@ -130,11 +130,11 @@ namespace Aplicacion.Casos_de_usos
         {
             return await _Consultas.GetIdFuncion(id); //Comprobamos que exista la función y la devolvemos si existe
         }
-        async Task<EliminarFuncionResponse> IServiciosFunciones.EliminarFuncion(Funciones funcion)
+        async Task<FuncionEliminadaResponse> IServiciosFunciones.EliminarFuncion(Funciones funcion)
         {
             if (await _Eliminar.RemoverFuncion(funcion)) //Enviamos la funcion a infraestructura para que la elimine de la BD y en caso de poder eliminar la función preparamos el response 
             {
-                return new EliminarFuncionResponse //Con los datos de función se arma el response de la función eliminada.
+                return new FuncionEliminadaResponse //Con los datos de función se arma el response de la función eliminada.
                 {
                     FuncionId = funcion.FuncionesId,
                     Fecha = funcion.Fecha,
@@ -163,58 +163,61 @@ namespace Aplicacion.Casos_de_usos
             }
 
             int ignorar = -1; //Tiene que entrar en la primera, en la segunda no, y luego si.
-
-            foreach (var item in Response.Funciones.Tickets) //No sé porque siempre en la posición 1 del arreglo, se agrega un id viejardo
+            if (ticket.Cantidad > 0)
             {
-                if (item.Usuario == ticket.Usuario)
+                foreach (var item in Response.Funciones.Tickets) //No sé porque siempre en la posición 1 del arreglo, se agrega un id viejardo
                 {
-                    if (ignorar != 0)
+                    if (item.Usuario == ticket.Usuario)
                     {
-                        ListaTickets.Add(item.TicketsId);
-                    }
-                };
-                ignorar++;
-            }
-
-            return new TicketRespuesta //Creamos y devolvemos la respuesta 
-            {
-                tickets = ListaTickets,
-                Funciones = new FuncionCompletaRespuesta
-                {
-                    FuncionId = Response.Funciones.PeliculaId,
-                    Pelicula = new PeliculaRespuesta
-                    {
-                        Peliculaid = Response.Funciones.PeliculaId,
-                        Titulo = Response.Funciones.Peliculas.Titulo,
-                        Poster = Response.Funciones.Peliculas.Poster,
-                        Genero = new GeneroRespuesta
+                        if (ignorar != 0)
                         {
-                            Id = Response.Funciones.Peliculas.Generos.GenerosId,
-                            Nombre = Response.Funciones.Peliculas.Generos.Nombre
-                        },
-                    },
-                    Sala = new SalaRespuesta
+                            ListaTickets.Add(item.TicketsId);
+                        }
+                    };
+                    ignorar++;
+                }
+
+                return new TicketRespuesta //Creamos y devolvemos la respuesta 
+                {
+                    tickets = ListaTickets,
+                    Funciones = new FuncionRespuesta
                     {
-                        Id = Response.Funciones.Salas.SalasId,
-                        Nombre = Response.Funciones.Salas.Nombre,
-                        Capacidad = Response.Funciones.Salas.Capacidad,
+                        FuncionId = Response.Funciones.PeliculaId,
+                        Pelicula = new InfoPeliculasParaFuncionesRespuesta
+                        {
+                            Peliculaid = Response.Funciones.PeliculaId,
+                            Titulo = Response.Funciones.Peliculas.Titulo,
+                            Poster = Response.Funciones.Peliculas.Poster,
+                            Genero = new GeneroRespuesta
+                            {
+                                Id = Response.Funciones.Peliculas.Generos.GenerosId,
+                                Nombre = Response.Funciones.Peliculas.Generos.Nombre
+                            },
+                        },
+                        Sala = new SalaRespuesta
+                        {
+                            Id = Response.Funciones.Salas.SalasId,
+                            Nombre = Response.Funciones.Salas.Nombre,
+                            Capacidad = Response.Funciones.Salas.Capacidad,
+                        },
+                        Fecha = Response.Funciones.Fecha,
+                        Horario = Response.Funciones.Hora,
                     },
-                    Fecha = Response.Funciones.Fecha,
-                    Horario = Response.Funciones.Hora,
-                },
-                usuario = Response.Usuario,
-            };
+                    usuario = Response.Usuario,
+                };
+            }
+            else return null;
         }
 
-        async Task<FuncionCompletaRespuesta> IServiciosFunciones.GetDatosFuncion(int id)
+        async Task<FuncionRespuesta> IServiciosFunciones.GetDatosFuncion(int id)
         {
             Funciones funcion = await _Consultas.GetIdFuncion(id);
             if (funcion != null)
             {
-                return new FuncionCompletaRespuesta
+                return new FuncionRespuesta
                 {
                     FuncionId = funcion.FuncionesId,
-                    Pelicula = new PeliculaRespuesta
+                    Pelicula = new InfoPeliculasParaFuncionesRespuesta
                     {
                         Peliculaid = funcion.PeliculaId,
                         Titulo = funcion.Peliculas.Titulo,

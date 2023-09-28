@@ -12,8 +12,8 @@ namespace Aplicacion.Interfaces.Aplicacion
     {
         Task<bool> ConsultarNombre(int ID, PeliculaDTO nombre);
         Task<bool> ComprobarId(int id);
-        Task<PeliculaCompletaResponse> ActulizarPelicula(int Id, PeliculaDTO peli);
+        Task<PeliculaResponse> ActulizarPelicula(int Id, PeliculaDTO peli);
         Task<string> LimitarCaracteres(PeliculaDTO pelicula);
-        Task<PeliculaCompletaResponse> DatosPelicula(int id);
+        Task<PeliculaResponse> DatosPelicula(int id);
     }
 }

@@ -27,7 +27,7 @@ namespace TP2_ProyectoSoftware.Controllers
                 return NotFound(respuesta);
             }
             //Se realiza la query de la pelicula trayendo la respuesta a dar
-            PeliculaCompletaResponse pelicula = await _Servicio.DatosPelicula(ID);
+            PeliculaResponse pelicula = await _Servicio.DatosPelicula(ID);
             return Ok(pelicula);
         }
 
@@ -54,7 +54,7 @@ namespace TP2_ProyectoSoftware.Controllers
                 return Conflict(respuesta);
                 }
 
-            PeliculaCompletaResponse peli = await _Servicio.ActulizarPelicula(ID, pelicula); //Se actualiza la pelicula
+            PeliculaResponse peli = await _Servicio.ActulizarPelicula(ID, pelicula); //Se actualiza la pelicula
 
             if (peli == null)
                 {//En caso de tener problemas en actualizar el genero se lanza el siguiente mensaje HTTP404

@@ -1,7 +1,7 @@
 ﻿
 namespace Aplicacion.RespuestasHTTP
 {
-    public class EliminarFuncionResponse
+    public class InfoFuncionesParaPeliculaRespuesta
     {
         public int FuncionId { get; set; }
         public DateTime Fecha { get; set; }

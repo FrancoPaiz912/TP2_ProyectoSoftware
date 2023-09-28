@@ -21,7 +21,7 @@ namespace TP2_ProyectoSoftware.Controllers
         [HttpGet("{ID}")]
         public async Task<ActionResult> GetFuncion(int ID) 
         {
-            FuncionCompletaRespuesta funcion = await _ServicioFunciones.GetDatosFuncion(ID);
+            FuncionRespuesta funcion = await _ServicioFunciones.GetDatosFuncion(ID);
             if (funcion == null)
             {
                 var respuesta = new { Motivo = "El ID ingresado no coincide con ninguna funcion registrada en la base de datos, intente con otra ID." };
@@ -31,11 +31,11 @@ namespace TP2_ProyectoSoftware.Controllers
         }
 
         [HttpGet] 
-        public async Task<ActionResult<IEnumerable<FuncionCompletaRespuesta>>> GetFunciones(string? Fecha= null,string? Pelicula=null, int? IdGenero =null) 
+        public async Task<ActionResult<IEnumerable<FuncionRespuesta>>> GetFunciones(string? Fecha= null,string? Pelicula=null, int? IdGenero =null) 
         {
             try
             {   //paso los parametros a capa de aplicación
-                List<FuncionCompletaRespuesta> result = await _ServicioFunciones.GetFuncionesRespuesta(Fecha, Pelicula, IdGenero);
+                List<FuncionRespuesta> result = await _ServicioFunciones.GetFuncionesRespuesta(Fecha, Pelicula, IdGenero);
                 if (result.Count() == 0) //Si no se tienen resultados arroja un mensaje 404
                 {
                     var respuesta = new { Motivo = "No se encontraron proximas funciones." };
@@ -88,7 +88,7 @@ namespace TP2_ProyectoSoftware.Controllers
             Funciones func = await _ServicioFunciones.ComprobarFunciones(ID); //Compuebo que el ID exista y si existe se retorna la función con dicho ID
             if (func != null) //Si la función existe ingresa
             {
-                EliminarFuncionResponse funcion = await _ServicioFunciones.EliminarFuncion(func); //Mandamos la funcion a eliminar
+                FuncionEliminadaResponse funcion = await _ServicioFunciones.EliminarFuncion(func); //Mandamos la funcion a eliminar
                 if (funcion != null) return Ok(funcion); //Devuelve el response de la función eliminada
                 else {
                     var respuest = new { Motivo = "La funcion que desea eliminar ya tiene tickets vendidos por lo que no se puede eliminar."};
@@ -107,7 +107,7 @@ namespace TP2_ProyectoSoftware.Controllers
                 var respuesta = new { Motivo = "Función no registrada en la base de datos"}; //Si no existe se arroja un mensaje HTTP404
                 return NotFound(respuesta);
             }//Si se encuentra la función devuelve el response de asientos disponibles 
-            AsientosResponse TicketsDisponibles = await _ServicioSalas.CapacidadDisponible(ID);
+            AsientosRespuesta TicketsDisponibles = await _ServicioSalas.CapacidadDisponible(ID);
             return Ok(TicketsDisponibles);
         }
 
@@ -120,8 +120,14 @@ namespace TP2_ProyectoSoftware.Controllers
                 return NotFound(respuesta);
             }
 
-            AsientosResponse Asientos = await _ServicioSalas.CapacidadDisponible(ID); //Se consulta la capacidad
+            AsientosRespuesta Asientos = await _ServicioSalas.CapacidadDisponible(ID); //Se consulta la capacidad
 
+            if (Ticket.Cantidad <= 0)
+            {
+                var respuesta = new { Motivo = "Ingreso de un numero no valido. Por favor ingrese un valor mayor a 0" };
+                return BadRequest(respuesta);
+            }
+            
             if (Asientos.Cantidad < Ticket.Cantidad) //Si se solicitan más entradas de las disponibles arroja un mensaje HTTP400
             {
                 var respuesta = new { Motivo = "La cantidad de entradas solicitadas excedes a la cantidad de entradas disponibles"};
