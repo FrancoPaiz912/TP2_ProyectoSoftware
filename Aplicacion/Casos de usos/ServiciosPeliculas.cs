@@ -3,11 +3,6 @@ using Aplicacion.Interfaces.Aplicacion;
 using Aplicacion.Interfaces.Infraestructura;
 using Aplicacion.RespuestasHTTP;
 using Dominio;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aplicacion.Casos_de_usos
 {
@@ -24,19 +19,19 @@ namespace Aplicacion.Casos_de_usos
 
         async Task<bool> IServiciosPeliculas.ComprobarId(int id)
         {
-            return await _Consultas.ComprobarID(id);
+            return await _Consultas.ComprobarID(id); //Comprobamos que exista la pelicula 
         }
 
         async Task<bool> IServiciosPeliculas.ConsultarNombre(int ID, PeliculaDTO nombre)
         {
-            return await _Consultas.ComprobarNombre(ID, nombre);
+            return await _Consultas.ComprobarNombre(ID, nombre); //Comprobamos el nombre de la pelicula y retornamos un booleano acorde si existe o no
         }
 
         async Task<PeliculaCompletaResponse> IServiciosPeliculas.ActulizarPelicula(int Id, PeliculaDTO peli)
         {
             List<FuncionRespuesta> list = new List<FuncionRespuesta>();
-            Peliculas pelicula = await _Actualizar.ActualizarPelicula(Id, peli);
-            if (pelicula != null) {
+            Peliculas pelicula = await _Actualizar.ActualizarPelicula(Id, peli); //Se envian los datos para actualizar la pelicula en la base de datos
+            if (pelicula != null) { 
                 foreach (var item in pelicula.Funciones)
                 {
                     list.Add(new FuncionRespuesta
@@ -46,7 +41,7 @@ namespace Aplicacion.Casos_de_usos
                         Horario = item.Hora,
                     });
                 }
-                return new PeliculaCompletaResponse
+                return new PeliculaCompletaResponse //Creamos el response de pelicula
                 {
                     Peliculaid = pelicula.Peliculasid,
                     Titulo = pelicula.Titulo,
@@ -58,13 +53,13 @@ namespace Aplicacion.Casos_de_usos
                         Id = pelicula.Generos.GenerosId,
                         Nombre = pelicula.Generos.Nombre,
                     },
-                    funciones = list, //Crear funciones respuestas
+                    funciones = list, 
                 };
             }
             else return null;
         }
 
-        async Task<string> IServiciosPeliculas.LimitarCaracteres(PeliculaDTO pelicula)
+        async Task<string> IServiciosPeliculas.LimitarCaracteres(PeliculaDTO pelicula) //Se compruba que no se excedan las limitaciones de caracteres. En caso de no hacerlo devuelve una cadena vacía
         {
             if (pelicula.Titulo.Length > 50)
             {
@@ -89,35 +84,31 @@ namespace Aplicacion.Casos_de_usos
         async Task<PeliculaCompletaResponse> IServiciosPeliculas.DatosPelicula(int id)
         {
             List<FuncionRespuesta> respuesta = new List<FuncionRespuesta>();
-            List<Funciones> pelicula = await _Consultas.RecuperarPelicula(id);
-            if (pelicula.Count > 0)
+            Peliculas pelicula = await _Consultas.RecuperarPelicula(id); //Se busca en la base de datos la información de la pelicula incluyendo sus multiples funciones
+            foreach (Funciones func in pelicula.Funciones) //Se agrega a una lista las funciones relacionadas a la pelicula.
             {
-                foreach (Funciones func in pelicula)
+                respuesta.Add(new FuncionRespuesta
                 {
-                    respuesta.Add(new FuncionRespuesta
-                    {
-                        FuncionId = func.FuncionesId,
-                        Fecha = func.Fecha,
-                        Horario = func.Hora,
-                    });
-                }
+                    FuncionId = func.FuncionesId,
+                    Fecha = func.Fecha,
+                    Horario = func.Hora,
+                });
+            }
 
-                return new PeliculaCompletaResponse
+            return new PeliculaCompletaResponse //Se fabrica el response de pelicula incluyendo la cantidad de funciones que tiene 
                 {
-                    Peliculaid = pelicula[0].PeliculaId,
-                    Titulo = pelicula[0].Peliculas.Titulo,
-                    Sinopsis = pelicula[0].Peliculas.Sinopsis,
-                    Poster = pelicula[0].Peliculas.Poster,
-                    Trailer = pelicula[0].Peliculas.Trailer,
+                    Peliculaid = pelicula.Peliculasid, //Al tener en la lista todas las funciones la misma informacion de pelicula se utiliza la de la posición 0 solamente para asegurarse que exista, pero podría ser cualquier otra que exista.
+                    Titulo = pelicula.Titulo,
+                    Sinopsis = pelicula.Sinopsis,
+                    Poster = pelicula.Poster,
+                    Trailer = pelicula.Trailer,
                     Genero = new GeneroRespuesta
                     {
-                        Id = pelicula[0].Peliculas.Generos.GenerosId,
-                        Nombre = pelicula[0].Peliculas.Generos.Nombre,
+                        Id = pelicula.Generos.GenerosId,
+                        Nombre = pelicula.Generos.Nombre,
                     },
                     funciones = respuesta,
                 };
-            }
-            else return null;
         }
     }
 }

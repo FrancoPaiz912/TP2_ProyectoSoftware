@@ -2,11 +2,6 @@
 using Dominio;
 using Infraestructura.EstructuraDB;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infraestructura.Consultas_DB
 {
@@ -19,8 +14,8 @@ namespace Infraestructura.Consultas_DB
             _Contexto = contexto;
         }
 
-        async Task<int> IConsultasSalas.CapacidadDisponible(int idFuncion) //Tener todas las querys juntas?
-        {
+        async Task<int> IConsultasSalas.CapacidadDisponible(int idFuncion) 
+        {//Consulta de la capacidad disponible para determinada funcion
             int result=  _Contexto.Funciones             
                         .Include(s => s.Tickets)
                         .Include(s => s.Salas).Where(s => s.FuncionesId == idFuncion).Select(s => s.Salas.Capacidad - s.Tickets.Count()).FirstOrDefault(); //No me descuenta los tickets

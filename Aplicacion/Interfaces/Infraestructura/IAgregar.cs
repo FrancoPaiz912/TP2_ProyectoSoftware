@@ -1,5 +1,4 @@
-﻿using Aplicacion.DTO;
-using Dominio;
+﻿using Dominio;
 
 namespace Aplicación.Interfaces.Infraestructura
 {

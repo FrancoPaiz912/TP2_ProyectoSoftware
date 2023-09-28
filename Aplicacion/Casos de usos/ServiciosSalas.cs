@@ -1,11 +1,6 @@
 ﻿using Aplicacion.Interfaces.Aplicacion;
 using Aplicacion.Interfaces.Infraestructura;
 using Aplicacion.RespuestasHTTP;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aplicacion.Casos_de_usos
 {
@@ -19,9 +14,9 @@ namespace Aplicacion.Casos_de_usos
 
         async Task<AsientosResponse> IServiciosSalas.CapacidadDisponible(int IdFuncion)
         {
-            return new AsientosResponse
+            return new AsientosResponse 
             {
-                Cantidad = await _Consultas.CapacidadDisponible(IdFuncion),
+                Cantidad = await _Consultas.CapacidadDisponible(IdFuncion), //Comprueba y devuelve la cantidad de entradas disponibles
             };
         }
     }

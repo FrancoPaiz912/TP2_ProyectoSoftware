@@ -7,10 +7,7 @@ namespace Aplicacion.Interfaces.Aplicacion
 {
     public interface IServiciosFunciones
     {
-        Task<List<FuncionCompletaRespuesta>> GetFuncionesDia(DateTime dia, List<FuncionCompletaRespuesta> result);
-        Task<List<FuncionCompletaRespuesta>> GetFuncionesNombrePelicula(string? Pelicula, List<FuncionCompletaRespuesta> result);
-        Task<List<FuncionCompletaRespuesta>> GetFuncionesGenero(int? id, List<FuncionCompletaRespuesta> result);
-        Task<List<FuncionCompletaRespuesta>> GetFuncionesRespuesta();
+        Task<List<FuncionCompletaRespuesta>> GetFuncionesRespuesta(string fecha,string titulo,int? Genero);
         Task<List<FuncionCompletaRespuesta>> GetCartelera(List<FuncionCompletaRespuesta> Funciones);
         Task<FuncionCompletaRespuesta> AddFunciones(FuncionesDTO funcion);
         Task<List<bool>> GetId(int IdPelicula, int IdSala);

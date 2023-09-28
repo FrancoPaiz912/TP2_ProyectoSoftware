@@ -1,4 +1,3 @@
-using Aplicacion;
 using Aplicacion.Casos_de_usos;
 using Aplicacion.Interfaces.Aplicacion;
 using Aplicación.Interfaces.Infraestructura;

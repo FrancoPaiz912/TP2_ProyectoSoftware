@@ -1,9 +1,7 @@
-﻿using Aplicacion.DTO;
-using Aplicación.Interfaces.Infraestructura;
+﻿using Aplicación.Interfaces.Infraestructura;
 using Dominio;
 using Infraestructura.EstructuraDB;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Infraestructura.Inserts
 {
@@ -23,7 +21,7 @@ namespace Infraestructura.Inserts
         }
 
         async Task<Tickets> IAgregar.AgregarTicket(Tickets ticket)
-        {
+        {//Agregamops los ticckets a la base de datos y devolvemos los datos de la función relacionada 
             _Contexto.Add(ticket);
             await _Contexto.SaveChangesAsync();
             return await _Contexto.Tickets.Include(s => s.Funciones)

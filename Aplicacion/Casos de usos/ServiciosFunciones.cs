@@ -1,13 +1,9 @@
 ﻿using Aplicacion.DTO;
-using Aplicacion.Excepciones;
 using Aplicacion.Interfaces.Aplicacion;
 using Aplicación.Interfaces.Infraestructura;
 using Aplicacion.Interfaces.Infraestructura;
 using Aplicacion.RespuestasHTTP;
 using Dominio;
-using System;
-using System.Security.Cryptography;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aplicacion.Casos_de_usos
 {
@@ -24,11 +20,11 @@ namespace Aplicacion.Casos_de_usos
         }
 
         //Gets
-        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetFuncionesRespuesta()
+        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetFuncionesRespuesta(string fecha, string titulo, int? Genero)
         {
-            List<Funciones> Funciones = await _Consultas.ListarFunciones();
-            List<FuncionCompletaRespuesta> result= new List<FuncionCompletaRespuesta> ();
-            foreach (var item in Funciones)
+            List<Funciones> Funciones = await _Consultas.ListarFunciones(fecha, titulo, Genero); //Llamo a infraestructura
+            List<FuncionCompletaRespuesta> result = new List<FuncionCompletaRespuesta>();
+            foreach (var item in Funciones) //Si se tienen resultados, armo el response correspondiente y lo devuelvo.
             {
                 result.Add(new FuncionCompletaRespuesta
                 {
@@ -55,129 +51,6 @@ namespace Aplicacion.Casos_de_usos
                 });
             }
             return result;
-        }
-
-        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetFuncionesDia(DateTime dia, List<FuncionCompletaRespuesta> funciones)
-        {
-            List<Funciones> result = new List<Funciones>();
-            if (result.Count() == 0 && dia != null)
-            {
-                result = await _Consultas.ListarFecha(dia, funciones);
-                foreach (var item in result)
-                {
-                    funciones.Add(new FuncionCompletaRespuesta
-                    {
-                        FuncionId = item.FuncionesId,
-                        Pelicula = new PeliculaRespuesta
-                        {
-                            Peliculaid = item.PeliculaId,
-                            Titulo = item.Peliculas.Titulo,
-                            Poster = item.Peliculas.Poster,
-                            Genero = new GeneroRespuesta
-                            {
-                                Id = item.Peliculas.Generos.GenerosId,
-                                Nombre = item.Peliculas.Generos.Nombre
-                            },
-                        },
-                        Sala = new SalaRespuesta
-                        {
-                            Id = item.Salas.SalasId,
-                            Nombre = item.Salas.Nombre,
-                            Capacidad = item.Salas.Capacidad,
-                        },
-                        Fecha = item.Fecha,
-                        Horario = item.Hora,
-                    });
-                }
-                return funciones;
-            }
-            else
-            {
-                funciones = funciones.Where(s => s.Fecha == dia).ToList();  
-                return funciones;
-            }
-        }
-
-        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetFuncionesNombrePelicula(string? Pelicula, List<FuncionCompletaRespuesta> funciones)
-        {
-            List<Funciones> result = new List<Funciones>();
-            if (funciones.Count() == 0 && Pelicula != null)
-            {
-                result = await _Consultas.ListarPeliculas(Pelicula, funciones);
-                foreach (var item in result)
-                {
-                    funciones.Add(new FuncionCompletaRespuesta
-                    {
-                        FuncionId = item.FuncionesId,
-                        Pelicula = new PeliculaRespuesta
-                        {
-                            Peliculaid = item.PeliculaId,
-                            Titulo = item.Peliculas.Titulo,
-                            Poster = item.Peliculas.Poster,
-                            Genero = new GeneroRespuesta
-                            {
-                                Id = item.Peliculas.Generos.GenerosId,
-                                Nombre = item.Peliculas.Generos.Nombre
-                            },
-                        },
-                        Sala = new SalaRespuesta
-                        {
-                            Id = item.Salas.SalasId,
-                            Nombre = item.Salas.Nombre,
-                            Capacidad = item.Salas.Capacidad,
-                        },
-                        Fecha = item.Fecha,
-                        Horario = item.Hora,
-                    });
-                }
-                return funciones;
-            }
-            else
-            {
-                funciones = funciones.Where(s => s.Pelicula.Titulo.Contains(Pelicula)).ToList();  
-                return funciones;
-            }
-        }
-
-        async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetFuncionesGenero(int? GeneroID, List<FuncionCompletaRespuesta> funciones)
-        {
-            List<Funciones> result = new List<Funciones>();
-            if (funciones.Count() == 0 && GeneroID != null)
-            {
-                result = await _Consultas.ListarGeneros(GeneroID, funciones);
-                foreach (var item in result)
-                {
-                    funciones.Add(new FuncionCompletaRespuesta
-                    {
-                        FuncionId = item.FuncionesId,
-                        Pelicula = new PeliculaRespuesta
-                        {
-                            Peliculaid = item.PeliculaId,
-                            Titulo = item.Peliculas.Titulo,
-                            Poster = item.Peliculas.Poster,
-                            Genero = new GeneroRespuesta
-                            {
-                                Id = item.Peliculas.Generos.GenerosId,
-                                Nombre = item.Peliculas.Generos.Nombre
-                            },
-                        },
-                        Sala = new SalaRespuesta
-                        {
-                            Id = item.Salas.SalasId,
-                            Nombre = item.Salas.Nombre,
-                            Capacidad = item.Salas.Capacidad,
-                        },
-                        Fecha = item.Fecha,
-                        Horario = item.Hora,
-                    });
-                }
-                return funciones;
-            }
-            else
-            {
-                funciones = funciones.Where(s => s.Pelicula.Genero.Id == GeneroID).ToList();
-                return funciones;
-            }
         }
 
         async Task<List<FuncionCompletaRespuesta>> IServiciosFunciones.GetCartelera(List<FuncionCompletaRespuesta> funciones)
@@ -250,39 +123,38 @@ namespace Aplicacion.Casos_de_usos
 
         async Task<List<bool>> IServiciosFunciones.GetId(int IdPelicula,int IdSala)
         {
-            return await _Consultas.GetIDs(IdPelicula,IdSala);
+            return await _Consultas.GetIDs(IdPelicula,IdSala); //Retorno una lista con dos boolean que representan los ID de pelicula y sala. 
         }
 
         async Task<Funciones> IServiciosFunciones.ComprobarFunciones(int id)
         {
-            return await _Consultas.GetIdFuncion(id);
+            return await _Consultas.GetIdFuncion(id); //Comprobamos que exista la función y la devolvemos si existe
         }
-
         async Task<EliminarFuncionResponse> IServiciosFunciones.EliminarFuncion(Funciones funcion)
         {
-            if (await _Eliminar.RemoverFuncion(funcion))
+            if (await _Eliminar.RemoverFuncion(funcion)) //Enviamos la funcion a infraestructura para que la elimine de la BD y en caso de poder eliminar la función preparamos el response 
             {
-                return new EliminarFuncionResponse
+                return new EliminarFuncionResponse //Con los datos de función se arma el response de la función eliminada.
                 {
                     FuncionId = funcion.FuncionesId,
                     Fecha = funcion.Fecha,
                     Horario = funcion.Hora,
                 };
             }
-            else return null;
+            else return null; //Si no se pudo eliminar la función se retorna un null que servirá para indicar justamente esto.
         }
 
         async Task<bool> IServiciosFunciones.ComprobarHorario(int Salaid, DateTime Fecha, TimeSpan Hora)
         {
-            return await _Consultas.ComprobacionHoraria(Salaid, Fecha, Hora);
+            return await _Consultas.ComprobacionHoraria(Salaid, Fecha, Hora); //Llamo a infraestructura y devuelvo un bool según este disponible o no el horario.
         }
 
         async Task<TicketRespuesta> IServiciosFunciones.GenerarTicket(int ID, TicketDTO ticket)
         {
-            Tickets Response= new Tickets();
+            Tickets Response= new Tickets(); 
             List<Guid> ListaTickets = new List<Guid>();
             for (int i = 0; i < ticket.Cantidad; i++)
-            {
+            {//Agregamos los tickets solicitados a la base de datos
                 Response = await _Agregar.AgregarTicket(new Tickets
                 {
                     FuncionId = ID,
@@ -304,7 +176,7 @@ namespace Aplicacion.Casos_de_usos
                 ignorar++;
             }
 
-            return new TicketRespuesta
+            return new TicketRespuesta //Creamos y devolvemos la respuesta 
             {
                 tickets = ListaTickets,
                 Funciones = new FuncionCompletaRespuesta

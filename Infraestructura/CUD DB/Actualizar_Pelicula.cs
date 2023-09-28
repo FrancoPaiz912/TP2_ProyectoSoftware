@@ -3,12 +3,6 @@ using Aplicacion.Interfaces.Infraestructura;
 using Dominio;
 using Infraestructura.EstructuraDB;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infraestructura.Consultas_DB
 {
@@ -22,7 +16,7 @@ namespace Infraestructura.Consultas_DB
         }
 
         async Task<Peliculas> IActualizarPeliculas.ActualizarPelicula(int Id, PeliculaDTO peli)
-        {
+        {//Se busca la pelicula y el genero. Si no se encuentran se devuelve un null dado que no se pudo actualizar la pelicula (al comprobar que la pelicula existe con anterioridad esto quiere decir que es un problema del id de genero)
             Peliculas pelicula = await _Contexto.Peliculas.Include(s=> s.Funciones).Include(s => s.Generos).FirstOrDefaultAsync(s => s.Peliculasid == Id);
             Generos genero =  _Contexto.Generos.FirstOrDefault(s=> s.GenerosId == peli.Genero);
             if (pelicula != null && genero != null) 
@@ -36,7 +30,7 @@ namespace Infraestructura.Consultas_DB
             {
                 return null;
             }
-            await _Contexto.SaveChangesAsync();
+            await _Contexto.SaveChangesAsync(); 
             return pelicula;
         }
     }

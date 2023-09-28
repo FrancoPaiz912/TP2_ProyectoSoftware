@@ -2,11 +2,6 @@
 using Dominio;
 using Infraestructura.EstructuraDB;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infraestructura.CUD_DB
 {
@@ -20,14 +15,14 @@ namespace Infraestructura.CUD_DB
         }
 
         async Task<bool> IEliminar.RemoverFuncion(Funciones funcion)
-        {
+        { //Se ekimina la función siempre y cuando no cuente con tickets vendidos.
            Funciones result = await _Contexto.Funciones.Include(s => s.Tickets)
                 .Where(s => s.FuncionesId == funcion.FuncionesId && s.Tickets.Count() == 0).FirstOrDefaultAsync();
-            if (result == null)
+            if (result == null) //La función tiene tickets vendidos? No se puede eliminar
             {
                 return false;
             }
-            _Contexto.Remove(funcion);
+            _Contexto.Remove(funcion); //Si no tiene tickets vendidos se elimina normalmente.
             await _Contexto.SaveChangesAsync();
             return true;
         }
