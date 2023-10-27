@@ -18,7 +18,7 @@ namespace Infraestructura.Consultas_DB
         {//Consulta de la capacidad disponible para determinada funcion
             int result=  _Contexto.Funciones             
                         .Include(s => s.Tickets)
-                        .Include(s => s.Salas).Where(s => s.FuncionesId == idFuncion).Select(s => s.Salas.Capacidad - s.Tickets.Count()).FirstOrDefault(); //No me descuenta los tickets
+                        .Include(s => s.Salas).Where(s => s.FuncionId == idFuncion).Select(s => s.Salas.Capacidad - s.Tickets.Count()).FirstOrDefault(); //No me descuenta los tickets
             return result;
         }
     }

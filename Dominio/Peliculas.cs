@@ -2,7 +2,7 @@
 {
     public class Peliculas
     {
-        public int Peliculasid { get; set; }
+        public int PeliculaId { get; set; }
         public string Titulo { get; set; }
         public string Sinopsis { get; set; }
         public string Poster { get; set; }

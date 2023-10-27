@@ -2,7 +2,7 @@
 {
     public class Funciones
     {
-        public int FuncionesId { get; set; } 
+        public int FuncionId { get; set; } 
         public int PeliculaId { get; set; } 
         public int SalaId { get; set; }
         public DateTime Fecha { get; set; }

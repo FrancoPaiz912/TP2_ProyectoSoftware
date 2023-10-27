@@ -18,10 +18,12 @@ namespace TP2_ProyectoSoftware.Controllers
             _ServicioSalas = salas;
         }
 
-        [HttpGet("{ID}")]
-        public async Task<ActionResult> GetFuncion(int ID) 
+        [HttpGet("/api/v1/Funcion/{id}")]
+        public async Task<ActionResult> GetFuncion(int id) 
         {
-            FuncionRespuesta funcion = await _ServicioFunciones.GetDatosFuncion(ID);
+
+
+            FuncionRespuesta funcion = await _ServicioFunciones.GetDatosFuncion(id);
             if (funcion == null)
             {
                 var respuesta = new { Motivo = "El ID ingresado no coincide con ninguna funcion registrada en la base de datos, intente con otra ID." };
@@ -30,17 +32,12 @@ namespace TP2_ProyectoSoftware.Controllers
             return Ok(funcion);
         }
 
-        [HttpGet] 
-        public async Task<ActionResult<IEnumerable<FuncionRespuesta>>> GetFunciones(string? Fecha= null,string? Pelicula=null, int? IdGenero =null) 
+        [HttpGet("/api/v1/Funcion")] 
+        public async Task<ActionResult<IEnumerable<FuncionRespuesta>>> GetFunciones(string? fecha= null,string? titulo=null, int? genero =null) 
         {
             try
             {   //paso los parametros a capa de aplicación
-                List<FuncionRespuesta> result = await _ServicioFunciones.GetFuncionesRespuesta(Fecha, Pelicula, IdGenero);
-                if (result.Count() == 0) //Si no se tienen resultados arroja un mensaje 404
-                {
-                    var respuesta = new { Motivo = "No se encontraron proximas funciones." };
-                    return NotFound(respuesta);
-                }
+                List<FuncionRespuesta> result = await _ServicioFunciones.GetFuncionesRespuesta(fecha, titulo, genero);
                 return new JsonResult(result) { StatusCode = 200 }; //Devuelve los resultados encontrados 
             }
             catch (Exception)
@@ -50,24 +47,24 @@ namespace TP2_ProyectoSoftware.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("/api/v1/Funcion")]
         public async Task<ActionResult> CrearFunciones(FuncionesDTO funcion)
         {
-            List<bool> result = await _ServicioFunciones.GetId(funcion.PeliculaId, funcion.SalaId); //Compruebo que las ID de pelicula y sala existan en la base de datos
-            if (result[0] == false) //Si ID de Pelicula no existe 
+            List<bool> result = await _ServicioFunciones.GetId(funcion.pelicula, funcion.sala); //Compruebo que las ID de pelicula y sala existan en la base de datos
+            if (!result[0]) //Si ID de Pelicula no existe 
             {
                 var respuesta = new { Motivo = "No existe una pelicula asociada a ese ID" };
                 return BadRequest(respuesta);
             }
-            if (result[1] == false) //Si ID de Sala no existe
+            if (!result[1]) //Si ID de Sala no existe
             {
                 var respuesta = new { Motivo = "No existe una Sala asociada a ese ID" };
                 return BadRequest(respuesta);
             }
             try
             {
-                TimeSpan Comprobar2 = DateTime.Parse(funcion.Hora).TimeOfDay; //Comprobamos que la hora ingresada se pueda convertir al tipo datetime
-                if (await _ServicioFunciones.ComprobarHorario(funcion.SalaId,funcion.Fecha,Comprobar2)) //Si es true, se devuelve el mensaje HTTP409 que indica que el horario se superpone con otra funcion en la misma sala
+                TimeSpan Comprobar2 = DateTime.Parse(funcion.horario).TimeOfDay; //Comprobamos que la hora ingresada se pueda convertir al tipo datetime
+                if (await _ServicioFunciones.ComprobarHorario(funcion.sala,funcion.fecha,Comprobar2)) //Si es true, se devuelve el mensaje HTTP409 que indica que el horario se superpone con otra funcion en la misma sala
                 {
                     var respuesta = new { Motivo = "Horario ocupado, por favor ingrese otro" };
                     return Conflict(respuesta);
@@ -79,13 +76,13 @@ namespace TP2_ProyectoSoftware.Controllers
                 return BadRequest(respuesta);
             }
 
-            return new JsonResult(await _ServicioFunciones.AddFunciones(funcion)); 
+            return new JsonResult(await _ServicioFunciones.AddFunciones(funcion)) { StatusCode = 201}; 
         }
 
-        [HttpDelete("{ID}")]
-        public async Task<ActionResult> RemoveFunciones(int ID) 
+        [HttpDelete("/api/v1/Funcion/{id}")]
+        public async Task<ActionResult> RemoveFunciones(int id) 
         {
-            Funciones func = await _ServicioFunciones.ComprobarFunciones(ID); //Compuebo que el ID exista y si existe se retorna la función con dicho ID
+            Funciones func = await _ServicioFunciones.ComprobarFunciones(id); //Compuebo que el ID exista y si existe se retorna la función con dicho ID
             if (func != null) //Si la función existe ingresa
             {
                 FuncionEliminadaResponse funcion = await _ServicioFunciones.EliminarFuncion(func); //Mandamos la funcion a eliminar
@@ -99,28 +96,28 @@ namespace TP2_ProyectoSoftware.Controllers
             return NotFound(respuesta); 
         }
 
-        [HttpGet("{ID}/Tickets")]
-        public async Task<ActionResult> ComprobarTickets(int ID)
+        [HttpGet("/api/v1/Funcion/{id}/tickets")]
+        public async Task<ActionResult> ComprobarTickets(int id)
         {
-            if (await _ServicioFunciones.ComprobarFunciones(ID) == null) //Comprobamos que la función exista
+            if (await _ServicioFunciones.ComprobarFunciones(id) == null) //Comprobamos que la función exista
             {
                 var respuesta = new { Motivo = "Función no registrada en la base de datos"}; //Si no existe se arroja un mensaje HTTP404
                 return NotFound(respuesta);
             }//Si se encuentra la función devuelve el response de asientos disponibles 
-            AsientosRespuesta TicketsDisponibles = await _ServicioSalas.CapacidadDisponible(ID);
+            AsientosRespuesta TicketsDisponibles = await _ServicioSalas.CapacidadDisponible(id);
             return Ok(TicketsDisponibles);
         }
 
-        [HttpPost("{ID}/Tickets")]
-        public async Task<ActionResult> CrearTicket(int ID, TicketDTO Ticket)
+        [HttpPost("/api/v1/Funcion/{id}/tickets")]
+        public async Task<ActionResult> CrearTicket(int id, TicketDTO Ticket)
         {
-            if (await _ServicioFunciones.ComprobarFunciones(ID) == null) //Comprobamos que la función exista
+            if (await _ServicioFunciones.ComprobarFunciones(id) == null) //Comprobamos que la función exista
             {
                 var respuesta = new { Motivo = "Función no registrada en la base de datos"}; //Si no existe se devuelve un mensaje HTTP404
                 return NotFound(respuesta);
             }
 
-            AsientosRespuesta Asientos = await _ServicioSalas.CapacidadDisponible(ID); //Se consulta la capacidad
+            AsientosRespuesta Asientos = await _ServicioSalas.CapacidadDisponible(id); //Se consulta la capacidad
 
             if (Ticket.Cantidad <= 0)
             {
@@ -134,7 +131,7 @@ namespace TP2_ProyectoSoftware.Controllers
                 return BadRequest(respuesta);
             }
             //Si existe la cantidad solicitada, se imprimen las entradas con los datos de la función
-            return Ok(await _ServicioFunciones.GenerarTicket(ID,Ticket));
+            return Ok(await _ServicioFunciones.GenerarTicket(id,Ticket));
         }
 
     }

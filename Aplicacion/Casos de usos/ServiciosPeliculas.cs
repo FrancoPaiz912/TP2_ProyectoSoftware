@@ -32,25 +32,26 @@ namespace Aplicacion.Casos_de_usos
             List<InfoFuncionesParaPeliculaRespuesta> list = new List<InfoFuncionesParaPeliculaRespuesta>();
             Peliculas pelicula = await _Actualizar.ActualizarPelicula(Id, peli); //Se envian los datos para actualizar la pelicula en la base de datos
             if (pelicula != null) { 
-                foreach (var item in pelicula.Funciones)
+                foreach (Funciones func in pelicula.Funciones)
                 {
                     list.Add(new InfoFuncionesParaPeliculaRespuesta
                     {
-                        FuncionId = item.FuncionesId,
-                        Fecha = item.Fecha,
-                        Horario = item.Hora,
+                        FuncionId = func.FuncionId,
+                        Fecha = func.Fecha,
+                        Horario = func.Hora,
                     });
                 }
+
                 return new PeliculaResponse //Creamos el response de pelicula
                 {
-                    Peliculaid = pelicula.Peliculasid,
+                    Peliculaid = pelicula.PeliculaId,
                     Titulo = pelicula.Titulo,
                     Sinopsis = pelicula.Sinopsis,
                     Poster = pelicula.Poster,
                     Trailer = pelicula.Trailer,
                     Genero = new GeneroRespuesta
                     {
-                        Id = pelicula.Generos.GenerosId,
+                        Id = pelicula.Generos.GeneroId,
                         Nombre = pelicula.Generos.Nombre,
                     },
                     funciones = list, 
@@ -89,7 +90,7 @@ namespace Aplicacion.Casos_de_usos
             {
                 respuesta.Add(new InfoFuncionesParaPeliculaRespuesta
                 {
-                    FuncionId = func.FuncionesId,
+                    FuncionId = func.FuncionId,
                     Fecha = func.Fecha,
                     Horario = func.Hora,
                 });
@@ -97,14 +98,14 @@ namespace Aplicacion.Casos_de_usos
 
             return new PeliculaResponse //Se fabrica el response de pelicula incluyendo la cantidad de funciones que tiene 
                 {
-                    Peliculaid = pelicula.Peliculasid, //Al tener en la lista todas las funciones la misma informacion de pelicula se utiliza la de la posición 0 solamente para asegurarse que exista, pero podría ser cualquier otra que exista.
+                    Peliculaid = pelicula.PeliculaId, //Al tener en la lista todas las funciones la misma informacion de pelicula se utiliza la de la posición 0 solamente para asegurarse que exista, pero podría ser cualquier otra que exista.
                     Titulo = pelicula.Titulo,
                     Sinopsis = pelicula.Sinopsis,
                     Poster = pelicula.Poster,
                     Trailer = pelicula.Trailer,
                     Genero = new GeneroRespuesta
                     {
-                        Id = pelicula.Generos.GenerosId,
+                        Id = pelicula.Generos.GeneroId,
                         Nombre = pelicula.Generos.Nombre,
                     },
                     funciones = respuesta,

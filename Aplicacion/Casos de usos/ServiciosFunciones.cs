@@ -28,21 +28,21 @@ namespace Aplicacion.Casos_de_usos
             {
                 result.Add(new FuncionRespuesta
                 {
-                    FuncionId = item.FuncionesId,
+                    FuncionId = item.FuncionId,
                     Pelicula = new InfoPeliculasParaFuncionesRespuesta
                     {
-                        Peliculaid = item.PeliculaId,
+                        PeliculaId = item.PeliculaId,
                         Titulo = item.Peliculas.Titulo,
                         Poster = item.Peliculas.Poster,
                         Genero = new GeneroRespuesta
                         {
-                            Id = item.Peliculas.Generos.GenerosId,
+                            Id = item.Peliculas.Generos.GeneroId,
                             Nombre = item.Peliculas.Generos.Nombre
                         },
                     },
                     Sala = new SalaRespuesta
                     {
-                        Id = item.Salas.SalasId,
+                        Id = item.Salas.SalaId,
                         Nombre = item.Salas.Nombre,
                         Capacidad = item.Salas.Capacidad,
                     },
@@ -63,7 +63,7 @@ namespace Aplicacion.Casos_de_usos
                     FuncionId = item.FuncionId,
                     Pelicula = new InfoPeliculasParaFuncionesRespuesta
                     {
-                        Peliculaid = item.Pelicula.Peliculaid,
+                        PeliculaId = item.Pelicula.PeliculaId,
                         Titulo = item.Pelicula.Titulo,
                         Poster = item.Pelicula.Poster,
                         Genero = new GeneroRespuesta
@@ -89,30 +89,30 @@ namespace Aplicacion.Casos_de_usos
         {
             await _Agregar.AgregarFuncion(new Funciones
             {
-                PeliculaId = funcion.PeliculaId,
-                SalaId = funcion.SalaId,
-                Fecha = funcion.Fecha,
-                Hora = DateTime.Parse(funcion.Hora).TimeOfDay,
+                PeliculaId = funcion.pelicula,
+                SalaId = funcion.sala,
+                Fecha = funcion.fecha,
+                Hora = DateTime.Parse(funcion.horario).TimeOfDay,
             });
 
             Funciones func= await _Consultas.RetornarRegistro();
             return new FuncionRespuesta
             {
-                FuncionId = func.FuncionesId,
+                FuncionId = func.FuncionId,
                 Pelicula = new InfoPeliculasParaFuncionesRespuesta
                 {
-                    Peliculaid = func.PeliculaId,
+                    PeliculaId = func.PeliculaId,
                     Titulo = func.Peliculas.Titulo,
                     Poster = func.Peliculas.Poster,
                     Genero = new GeneroRespuesta
                     {
-                        Id = func.Peliculas.Generos.GenerosId,
+                        Id = func.Peliculas.Generos.GeneroId,
                         Nombre = func.Peliculas.Generos.Nombre
                     },
                 },
                 Sala = new SalaRespuesta
                 {
-                    Id = func.Salas.SalasId,
+                    Id = func.Salas.SalaId,
                     Nombre = func.Salas.Nombre,
                     Capacidad = func.Salas.Capacidad,
                 },
@@ -136,7 +136,7 @@ namespace Aplicacion.Casos_de_usos
             {
                 return new FuncionEliminadaResponse //Con los datos de función se arma el response de la función eliminada.
                 {
-                    FuncionId = funcion.FuncionesId,
+                    FuncionId = funcion.FuncionId,
                     Fecha = funcion.Fecha,
                     Horario = funcion.Hora,
                 };
@@ -151,8 +151,8 @@ namespace Aplicacion.Casos_de_usos
 
         async Task<TicketRespuesta> IServiciosFunciones.GenerarTicket(int ID, TicketDTO ticket)
         {
-            Tickets Response= new Tickets(); 
-            List<Guid> ListaTickets = new List<Guid>();
+            Funciones Response = new Funciones();
+            List<CodigoTicketResponse> ListaTickets = new List<CodigoTicketResponse>();
             for (int i = 0; i < ticket.Cantidad; i++)
             {//Agregamos los tickets solicitados a la base de datos
                 Response = await _Agregar.AgregarTicket(new Tickets
@@ -160,54 +160,56 @@ namespace Aplicacion.Casos_de_usos
                     FuncionId = ID,
                     Usuario = ticket.Usuario,
                 });
+                ListaTickets.Add(new CodigoTicketResponse {
+                    TicketId = Response.Tickets.ElementAt(Response.Tickets.Count - 1).TicketId,
+                });
             }
 
-            int ignorar = -1; //Tiene que entrar en la primera, en la segunda no, y luego si.
-            if (ticket.Cantidad > 0)
-            {
-                foreach (var item in Response.Funciones.Tickets) //No sé porque siempre en la posición 1 del arreglo, se agrega un id viejardo
-                {
-                    if (item.Usuario == ticket.Usuario)
-                    {
-                        if (ignorar != 0)
-                        {
-                            ListaTickets.Add(item.TicketsId);
-                        }
-                    };
-                    ignorar++;
-                }
+            //int ignorar = -1; //Tiene que entrar en la primera, en la segunda no, y luego si.
+            //if (ticket.Cantidad > 0)
+            //{
+                //foreach (var item in Response.Funciones.Tickets) //No sé porque siempre en la posición 1 del arreglo, se agrega un id viejardo
+                //{
+                //    if (item.Usuario == ticket.Usuario)
+                //    {
+                //        //if (ignorar != 0)
+                //        //{
+                //            ListaTickets.Add(item.TicketId);
+                //        //}
+                //    };
+                //    ignorar++;
+                //}
 
                 return new TicketRespuesta //Creamos y devolvemos la respuesta 
                 {
                     tickets = ListaTickets,
-                    Funciones = new FuncionRespuesta
+                    Funcion = new FuncionRespuesta
                     {
-                        FuncionId = Response.Funciones.PeliculaId,
+                        FuncionId = Response.PeliculaId,
                         Pelicula = new InfoPeliculasParaFuncionesRespuesta
                         {
-                            Peliculaid = Response.Funciones.PeliculaId,
-                            Titulo = Response.Funciones.Peliculas.Titulo,
-                            Poster = Response.Funciones.Peliculas.Poster,
+                            PeliculaId = Response.PeliculaId,
+                            Titulo = Response.Peliculas.Titulo,
+                            Poster = Response.Peliculas.Poster,
                             Genero = new GeneroRespuesta
                             {
-                                Id = Response.Funciones.Peliculas.Generos.GenerosId,
-                                Nombre = Response.Funciones.Peliculas.Generos.Nombre
+                                Id = Response.Peliculas.Generos.GeneroId,
+                                Nombre = Response.Peliculas.Generos.Nombre
                             },
                         },
                         Sala = new SalaRespuesta
                         {
-                            Id = Response.Funciones.Salas.SalasId,
-                            Nombre = Response.Funciones.Salas.Nombre,
-                            Capacidad = Response.Funciones.Salas.Capacidad,
+                            Id = Response.Salas.SalaId,
+                            Nombre = Response.Salas.Nombre,
+                            Capacidad = Response.Salas.Capacidad,
                         },
-                        Fecha = Response.Funciones.Fecha,
-                        Horario = Response.Funciones.Hora,
+                        Fecha = Response.Fecha,
+                        Horario = Response.Hora,
                     },
-                    usuario = Response.Usuario,
+                    usuario = Response.Tickets.ElementAt(Response.Tickets.Count - 1).Usuario,
                 };
             }
-            else return null;
-        }
+        //}
 
         async Task<FuncionRespuesta> IServiciosFunciones.GetDatosFuncion(int id)
         {
@@ -216,20 +218,20 @@ namespace Aplicacion.Casos_de_usos
             {
                 return new FuncionRespuesta
                 {
-                    FuncionId = funcion.FuncionesId,
+                    FuncionId = funcion.FuncionId,
                     Pelicula = new InfoPeliculasParaFuncionesRespuesta
                     {
-                        Peliculaid = funcion.PeliculaId,
+                        PeliculaId = funcion.PeliculaId,
                         Titulo = funcion.Peliculas.Titulo,
                         Poster = funcion.Peliculas.Poster,
                         Genero = new GeneroRespuesta
                         {
-                            Id = funcion.Peliculas.Generos.GenerosId,
+                            Id = funcion.Peliculas.Generos.GeneroId,
                             Nombre = funcion.Peliculas.Generos.Nombre
                         },
                     },
                     Sala = new SalaRespuesta{
-                        Id = funcion.Salas.SalasId,
+                        Id = funcion.Salas.SalaId,
                         Nombre = funcion.Salas.Nombre,
                         Capacidad = funcion.Salas.Capacidad,
                     },

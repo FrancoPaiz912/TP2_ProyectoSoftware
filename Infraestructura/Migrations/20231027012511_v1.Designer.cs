@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructura.Migrations
 {
     [DbContext(typeof(Contexto_Cine))]
-    [Migration("20230926060226_v1")]
+    [Migration("20231027012511_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -27,11 +27,11 @@ namespace Infraestructura.Migrations
 
             modelBuilder.Entity("Dominio.Funciones", b =>
                 {
-                    b.Property<int>("FuncionesId")
+                    b.Property<int>("FuncionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FuncionesId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FuncionId"));
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
@@ -45,7 +45,7 @@ namespace Infraestructura.Migrations
                     b.Property<int>("SalaId")
                         .HasColumnType("int");
 
-                    b.HasKey("FuncionesId");
+                    b.HasKey("FuncionId");
 
                     b.HasIndex("PeliculaId");
 
@@ -56,81 +56,81 @@ namespace Infraestructura.Migrations
 
             modelBuilder.Entity("Dominio.Generos", b =>
                 {
-                    b.Property<int>("GenerosId")
+                    b.Property<int>("GeneroId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GenerosId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GeneroId"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("GenerosId");
+                    b.HasKey("GeneroId");
 
-                    b.ToTable("Genero", (string)null);
+                    b.ToTable("Generos", (string)null);
 
                     b.HasData(
                         new
                         {
-                            GenerosId = 1,
+                            GeneroId = 1,
                             Nombre = "Acción"
                         },
                         new
                         {
-                            GenerosId = 2,
+                            GeneroId = 2,
                             Nombre = "Aventuras"
                         },
                         new
                         {
-                            GenerosId = 3,
+                            GeneroId = 3,
                             Nombre = "Ciencia Ficción"
                         },
                         new
                         {
-                            GenerosId = 4,
+                            GeneroId = 4,
                             Nombre = "Comedia"
                         },
                         new
                         {
-                            GenerosId = 5,
+                            GeneroId = 5,
                             Nombre = "Documental"
                         },
                         new
                         {
-                            GenerosId = 6,
+                            GeneroId = 6,
                             Nombre = "Drama"
                         },
                         new
                         {
-                            GenerosId = 7,
+                            GeneroId = 7,
                             Nombre = "Fantasía"
                         },
                         new
                         {
-                            GenerosId = 8,
+                            GeneroId = 8,
                             Nombre = "Musical"
                         },
                         new
                         {
-                            GenerosId = 9,
+                            GeneroId = 9,
                             Nombre = "Suspenso"
                         },
                         new
                         {
-                            GenerosId = 10,
+                            GeneroId = 10,
                             Nombre = "Terror"
                         });
                 });
 
             modelBuilder.Entity("Dominio.Peliculas", b =>
                 {
-                    b.Property<int>("Peliculasid")
+                    b.Property<int>("PeliculaId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Peliculasid"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PeliculaId"));
 
                     b.Property<int>("Genero")
                         .HasColumnType("int");
@@ -155,7 +155,7 @@ namespace Infraestructura.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("Peliculasid");
+                    b.HasKey("PeliculaId");
 
                     b.HasIndex("Genero");
 
@@ -164,7 +164,7 @@ namespace Infraestructura.Migrations
                     b.HasData(
                         new
                         {
-                            Peliculasid = 1,
+                            PeliculaId = 1,
                             Genero = 2,
                             Poster = "https://sm.ign.com/t/ign_es/screenshot/default/d0n-cinv4aahikr_mmkj.960.jpg",
                             Sinopsis = "Tras el asesinato de su padre, Simba, un joven león es apartado su reino y tendrá que descubrir con ayuda de amigos de la sabana africana el significado de la responsabilidad y la valentía. Más tarde volverá para recuperar el control de su reino.",
@@ -173,7 +173,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 2,
+                            PeliculaId = 2,
                             Genero = 7,
                             Poster = "https://i.blogs.es/617177/super-mario-bros-pelicula-mario/450_1000.webpupdate-database",
                             Sinopsis = "Dos hermanos plomeros, Mario y Luigi, caen por las alcantarillas y llegan a un mundo subterráneo mágico en el que deben enfrentarse al malvado Bowser para rescatar a la princesa Peach, quien ha sido forzada a aceptar casarse con él.",
@@ -182,7 +182,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 3,
+                            PeliculaId = 3,
                             Genero = 7,
                             Poster = "https://es.web.img3.acsta.net/pictures/22/06/16/12/54/0504030.jpg",
                             Sinopsis = "Gato ha usado ocho de sus nueve vidas y ha perdido la cuenta. Para recuperarlas, se embarca en una gran aventura en la Selva Negra en busca de la mítica Estrella del Deseo, su última esperanza de recuperar sus vidas perdidas.",
@@ -191,7 +191,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 4,
+                            PeliculaId = 4,
                             Genero = 3,
                             Poster = "https://hips.hearstapps.com/hmg-prod/images/poster-vengadores-endgame-1552567490.jpg",
                             Sinopsis = "Después de los devastadores eventos ocurridos en Vengadores: Infinity War, el universo está en ruinas debido a las acciones de Thanos, el Titán Loco. Tras la derrota, las cosas no pintan bien para los Vengadores.",
@@ -200,7 +200,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 5,
+                            PeliculaId = 5,
                             Genero = 1,
                             Poster = "https://cdn.diariojornada.com.ar/imagenes/2023/5/22/347430_1_125855_raw.jpg",
                             Sinopsis = "Dom Toretto y sus familias se enfrentan al peor enemigo imaginable, uno llegado desde el pasado con sed de venganza, dispuesto a cualquier cosa con tal de destruir todo aquello que Dom ama.",
@@ -209,7 +209,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 6,
+                            PeliculaId = 6,
                             Genero = 2,
                             Poster = "https://image.tmdb.org/t/p/original/pgDWrhaz0rSsD43ocNDX3PRIKJ3.jpg",
                             Sinopsis = "Después de reunirse con Gwen Stacy, el amigable vecino de tiempo completo de Brooklyn Spiderman, es lanzado a través del multiverso, donde se encuentra a un equipo de gente araña encomendada con proteger su mera existencia.",
@@ -218,7 +218,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 7,
+                            PeliculaId = 7,
                             Genero = 4,
                             Poster = "https://fotos.perfil.com//2023/05/31/900/0/blondi-1579634.jpeg",
                             Sinopsis = "Blondi es una película que sigue la vida cotidiana de una joven madre y su hijo de veinte años, quienes viven como amigos compartiendo gustos por la música, las salidas nocturnas, la marihuana y el alcohol.",
@@ -227,7 +227,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 8,
+                            PeliculaId = 8,
                             Genero = 10,
                             Poster = "https://lavereda.com.ar/wp-content/uploads/2023/07/unnamed-1-691x1024.jpg",
                             Sinopsis = "Un mal se extiende en la Francia de 1956 cuando un sacerdote es asesinado y la hermana Irene se enfrenta de nuevo a la monja demoníaca Valak.",
@@ -236,7 +236,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 9,
+                            PeliculaId = 9,
                             Genero = 9,
                             Poster = "https://pics.filmaffinity.com/Los_delincuentes-192145404-large.jpg",
                             Sinopsis = "Dos empleados de banco en un determinado momento de sus vidas se cuestionan la existencia rutinaria que llevan adelante. Uno de ellos encuentra una solución, cometer un delito. De alguna manera lo logra y compromete su destino al de su compañero.",
@@ -245,7 +245,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 10,
+                            PeliculaId = 10,
                             Genero = 9,
                             Poster = "https://elcritico.com.ar/wp-content/uploads/2021/09/no-respires-dos-poster.jpg",
                             Sinopsis = "Un veterano ciego debe usar su entrenamiento militar para salvar a un joven huérfano de un grupo de matones que irrumpen en su casa.",
@@ -254,7 +254,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 11,
+                            PeliculaId = 11,
                             Genero = 4,
                             Poster = "https://i.ebayimg.com/images/g/~yMAAOSw9d5kwP9m/s-l1200.webp",
                             Sinopsis = "Después de ser expulsada de Barbieland por no ser una muñeca de aspecto perfecto, Barbie parte hacia el mundo humano para encontrar la verdadera felicidad.",
@@ -263,7 +263,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 12,
+                            PeliculaId = 12,
                             Genero = 8,
                             Poster = "https://cloudfront-us-east-1.images.arcpublishing.com/abccolor/M7NQTVLP7NDAFJBVWGUG727LS4.jpg",
                             Sinopsis = "Una joven sirena que anhela conocer el mundo que se extiende donde acaba el mar emerge a la superficie y se enamora del príncipe Eric. Sin embargo, la única manera de estar con él exige hacer un pacto con Úrsula, la perversa bruja del mar.",
@@ -272,7 +272,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 13,
+                            PeliculaId = 13,
                             Genero = 10,
                             Poster = "https://mx.web.img3.acsta.net/pictures/19/05/17/09/29/4340950.jpg",
                             Sinopsis = "Ed y Lorraine Warren intentan contener a la muñeca poseída, Annabelle, en una vitrina bendecida. Pero una noche, Annabelle despierta espíritus malignos que se obsesionan con la hija del matrimonio y sus amigos, desatando un evento sobrenatural aterrador.",
@@ -281,7 +281,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 14,
+                            PeliculaId = 14,
                             Genero = 3,
                             Poster = "https://areajugones.sport.es/wp-content/uploads/2021/11/spider-man.jpeg",
                             Sinopsis = "Nuestro héroe héroe es desenmascarado y enfrenta la difícil tarea de equilibrar su vida normal con los riesgos de ser un superhéroe. La ayuda del Doctor Strange aumenta los peligros, llevándolo a explorar el verdadero significado de ser Spider-Man.",
@@ -290,7 +290,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 15,
+                            PeliculaId = 15,
                             Genero = 1,
                             Poster = "https://cinespainorg.files.wordpress.com/2023/06/screenshot_20230629_203725_twitter.jpg?w=1079",
                             Sinopsis = "Mientras Matt Turner (Liam Neeson) lleva a sus hijos a la escuela, una llamada anónima lo alerta sobre explosivos en su vehículo, desencadenando una frenética carrera contrarreloj con desafíos que desafían su ingenio y valentía para proteger a su familia.",
@@ -299,7 +299,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 16,
+                            PeliculaId = 16,
                             Genero = 6,
                             Poster = "https://assets.pikiran-rakyat.com/crop/0x0:0x0/x/photo/2022/07/22/4154057384.jpg",
                             Sinopsis = "Durante la Segunda Guerra Mundial, el teniente general Leslie Groves designa al físico J. Robert Oppenheimer para un grupo de trabajo que está desarrollando el Proyecto Manhattan, cuyo objetivo consiste en fabricar la primera bomba atómica.",
@@ -308,7 +308,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 17,
+                            PeliculaId = 17,
                             Genero = 5,
                             Poster = "https://pics.filmaffinity.com/El_juicio-391136016-mmed.jpg",
                             Sinopsis = "Dos años después del fin de la dictadura militar en Argentina, los principales miembros de la junta son juzgados en los tribunales. Se trata de 18 capítulos sucintamente editados a partir de 530 horas de metraje, dando testimonio del terrorismo de Estado.",
@@ -317,7 +317,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 18,
+                            PeliculaId = 18,
                             Genero = 7,
                             Poster = "https://pics.filmaffinity.com/Ninja_Turtles_Caos_mutante-917947891-large.jpg",
                             Sinopsis = "Tras pasar años ocultándose, los hermanos tortuga quieren ganarse el corazón de los neoyorquinos con la ayuda de su nueva amiga, April, quien colabora con ellos en la lucha contra unos criminales. Sin embargo, terminan enfrentándose a mutantes.",
@@ -326,7 +326,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 19,
+                            PeliculaId = 19,
                             Genero = 6,
                             Poster = "https://pics.filmaffinity.com/Alcarraas-918984157-large.jpg",
                             Sinopsis = "La vida de una familia de cultivadores de melocotones en un pequeño pueblo de Cataluña cambia cuando muere el dueño de su gran finca y su heredero vitalicio decide vender la tierra, amenazando repentinamente su sustento.",
@@ -335,7 +335,7 @@ namespace Infraestructura.Migrations
                         },
                         new
                         {
-                            Peliculasid = 20,
+                            PeliculaId = 20,
                             Genero = 1,
                             Poster = "https://www.ecartelera.com/carteles/17900/17983/001_m.jpg",
                             Sinopsis = "Un ex agente federal se embarca en una peligrosa misión para salvar a una niña de unos despiadados traficantes de menores. Se le acaba el tiempo y se adentra en la selva colombiana, arriesgando su vida para liberarla de un destino peor que la muerte.",
@@ -346,11 +346,11 @@ namespace Infraestructura.Migrations
 
             modelBuilder.Entity("Dominio.Salas", b =>
                 {
-                    b.Property<int>("SalasId")
+                    b.Property<int>("SalaId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SalasId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SalaId"));
 
                     b.Property<int>("Capacidad")
                         .HasColumnType("int");
@@ -360,26 +360,26 @@ namespace Infraestructura.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("SalasId");
+                    b.HasKey("SalaId");
 
                     b.ToTable("Salas", (string)null);
 
                     b.HasData(
                         new
                         {
-                            SalasId = 1,
+                            SalaId = 1,
                             Capacidad = 5,
                             Nombre = "1"
                         },
                         new
                         {
-                            SalasId = 2,
+                            SalaId = 2,
                             Capacidad = 15,
                             Nombre = "2"
                         },
                         new
                         {
-                            SalasId = 3,
+                            SalaId = 3,
                             Capacidad = 35,
                             Nombre = "3"
                         });
@@ -387,7 +387,7 @@ namespace Infraestructura.Migrations
 
             modelBuilder.Entity("Dominio.Tickets", b =>
                 {
-                    b.Property<Guid>("TicketsId")
+                    b.Property<Guid>("TicketId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -399,11 +399,11 @@ namespace Infraestructura.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("TicketsId");
+                    b.HasKey("TicketId", "FuncionId");
 
                     b.HasIndex("FuncionId");
 
-                    b.HasIndex("TicketsId")
+                    b.HasIndex("TicketId")
                         .IsUnique();
 
                     b.ToTable("Tickets", (string)null);

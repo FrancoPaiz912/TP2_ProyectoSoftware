@@ -14,7 +14,7 @@ namespace Infraestructura.Querys
             _Contexto = context;
         }
 
-        async Task<List<Funciones>> IConsultasFunciones.ListarFunciones(string? fecha, string titulo, int? Genero)
+        async Task<List<Funciones>> IConsultasFunciones.ListarFunciones(string? fecha, string? titulo, int? Genero)
         {
             return await _Contexto.Funciones //Realizo las consultas acorde los parametros utilizando un ternario condicional en cada caso para en caso de que el parametro sea null traer todos los datos
                 .Include(s => s.Tickets)
@@ -28,17 +28,17 @@ namespace Infraestructura.Querys
             return await _Contexto.Funciones.Include(s => s.Peliculas)
                 .ThenInclude(s => s.Generos)
                 .Include(s => s.Tickets)
-                .Include(s => s.Salas).OrderByDescending(s => s.FuncionesId).FirstOrDefaultAsync();
+                .Include(s => s.Salas).OrderByDescending(s => s.FuncionId).FirstOrDefaultAsync();
         }
 
         async Task<List<bool>> IConsultasFunciones.GetIDs(int IdPelicula, int IdSala)
         {
             List<bool> list= new List<bool>(); //Compruebo si las ID existen y agrego un boolean según corresponda
 
-            if (_Contexto.Peliculas.Any(s => s.Peliculasid == IdPelicula)) list.Add(true);
+            if (_Contexto.Peliculas.Any(s => s.PeliculaId == IdPelicula)) list.Add(true);
             else list.Add(false);
 
-            if (_Contexto.Salas.Any(s => s.SalasId == IdSala)) list.Add(true);
+            if (_Contexto.Salas.Any(s => s.SalaId == IdSala)) list.Add(true);
             else list.Add(false);
 
             return list;
@@ -46,7 +46,7 @@ namespace Infraestructura.Querys
 
         async Task<Funciones> IConsultasFunciones.GetIdFuncion(int id)
         {//Devolvemos la función si existe
-            return await _Contexto.Funciones.Include(s => s.Peliculas).ThenInclude(s => s.Generos).Include(s => s.Salas).FirstOrDefaultAsync(s => s.FuncionesId == id);
+            return await _Contexto.Funciones.Include(s => s.Peliculas).ThenInclude(s => s.Generos).Include(s => s.Salas).FirstOrDefaultAsync(s => s.FuncionId == id);
         }
 
         async Task<bool> IConsultasFunciones.ComprobacionHoraria(int Salaid, DateTime Fecha, TimeSpan Horainicio)

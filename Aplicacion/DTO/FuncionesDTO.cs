@@ -8,9 +8,9 @@ namespace Aplicacion.DTO
 {
     public class FuncionesDTO
     {
-        public int PeliculaId { get; set; }
-        public int SalaId { get; set; }
-        public DateTime Fecha { get; set; }
-        public string Hora { get; set; }
+        public int pelicula { get; set; }
+        public int sala { get; set; }
+        public DateTime fecha { get; set; }
+        public string horario { get; set; }
     }
 }

@@ -20,16 +20,15 @@ namespace Infraestructura.Inserts
             await _Contexto.SaveChangesAsync();
         }
 
-        async Task<Tickets> IAgregar.AgregarTicket(Tickets ticket)
+        async Task<Funciones> IAgregar.AgregarTicket(Tickets ticket)
         {//Agregamops los ticckets a la base de datos y devolvemos los datos de la función relacionada 
             _Contexto.Add(ticket);
             await _Contexto.SaveChangesAsync();
-            return await _Contexto.Tickets.Include(s => s.Funciones)
-                .ThenInclude(s => s.Salas)
-                .ThenInclude(s => s.Funciones)
-                .ThenInclude(s => s.Peliculas)
+            return await _Contexto.Funciones.Include(s => s.Tickets)
+                .Include(s => s.Salas)
+                .Include(s => s.Peliculas)
                 .ThenInclude(s => s.Generos)
-                .FirstOrDefaultAsync(s=> s.Funciones.FuncionesId == ticket.FuncionId);
+                .FirstOrDefaultAsync(s=> s.FuncionId == ticket.FuncionId);
         }
     }
 }

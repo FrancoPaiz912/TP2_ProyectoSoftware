@@ -17,7 +17,7 @@ namespace Infraestructura.Consultas_DB
 
         async Task<bool> IConsultasPeliculas.ComprobarNombre(int ID, PeliculaDTO peli)
         {//Devuelve booleano acorde si existe o no la pelicula
-            if (await _Contexto.Peliculas.FirstOrDefaultAsync(s => s.Titulo == peli.Titulo && s.Peliculasid != ID) == null)
+            if (await _Contexto.Peliculas.FirstOrDefaultAsync(s => s.Titulo == peli.Titulo && s.PeliculaId != ID) == null)
             {
                 return false;
             }
@@ -26,7 +26,7 @@ namespace Infraestructura.Consultas_DB
 
         async Task<bool> IConsultasPeliculas.ComprobarID(int id)
         {//Comprobamos que exista la pelicula 
-            if (await _Contexto.Peliculas.FirstOrDefaultAsync(s => s.Peliculasid == id) == null)
+            if (await _Contexto.Peliculas.FirstOrDefaultAsync(s => s.PeliculaId == id) == null)
             {
                 return true;
             }
@@ -35,7 +35,7 @@ namespace Infraestructura.Consultas_DB
 
         async Task<Peliculas> IConsultasPeliculas.RecuperarPelicula(int id)
         {//Se buscan las funciones asociadas a una pelicula así como también el genero de la misma.
-            return await _Contexto.Peliculas.Include(s => s.Funciones).Include(s => s.Generos).FirstOrDefaultAsync(s => s.Peliculasid == id);
+            return await _Contexto.Peliculas.Include(s => s.Funciones).Include(s => s.Generos).FirstOrDefaultAsync(s => s.PeliculaId == id);
         }
     }
 }
