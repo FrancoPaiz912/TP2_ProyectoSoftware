@@ -63,7 +63,7 @@ namespace Infraestructura.EstructuraDB
             modelBuilder.Entity<Tickets>(Entity =>
             {
                 Entity.ToTable("Tickets");
-                Entity.HasKey(pk => new {pk.TicketId, pk.FuncionId});
+                Entity.HasKey(pk => new { pk.TicketId, pk.FuncionId });
                 Entity.Property(pk => pk.TicketId).ValueGeneratedOnAdd().IsRequired();
                 Entity.Property(a => a.Usuario).HasMaxLength(50).IsRequired();
                 Entity.HasIndex(pk => pk.TicketId).IsUnique();

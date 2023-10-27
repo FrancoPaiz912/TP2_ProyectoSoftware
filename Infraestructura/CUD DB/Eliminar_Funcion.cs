@@ -15,14 +15,14 @@ namespace Infraestructura.CUD_DB
         }
 
         async Task<bool> IEliminar.RemoverFuncion(Funciones funcion)
-        { //Se ekimina la función siempre y cuando no cuente con tickets vendidos.
-           Funciones result = await _Contexto.Funciones.Include(s => s.Tickets)
-                .Where(s => s.FuncionId == funcion.FuncionId && s.Tickets.Count() == 0).FirstOrDefaultAsync();
-            if (result == null) //La función tiene tickets vendidos? No se puede eliminar
+        { 
+            Funciones result = await _Contexto.Funciones.Include(s => s.Tickets)
+                 .Where(s => s.FuncionId == funcion.FuncionId && s.Tickets.Count() == 0).FirstOrDefaultAsync();
+            if (result == null) 
             {
                 return false;
             }
-            _Contexto.Remove(funcion); //Si no tiene tickets vendidos se elimina normalmente.
+            _Contexto.Remove(funcion); 
             await _Contexto.SaveChangesAsync();
             return true;
         }

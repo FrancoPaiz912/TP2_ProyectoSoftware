@@ -16,17 +16,18 @@ namespace Infraestructura.Consultas_DB
         }
 
         async Task<Peliculas> IActualizarPeliculas.ActualizarPelicula(int Id, PeliculaDTO peli)
-        {//Se busca la pelicula y el genero. Si no se encuentran se devuelve un null dado que no se pudo actualizar la pelicula (al comprobar que la pelicula existe con anterioridad esto quiere decir que es un problema del id de genero)
-            Peliculas pelicula = await _Contexto.Peliculas.Include(s=> s.Funciones).Include(s => s.Generos).FirstOrDefaultAsync(s => s.PeliculaId == Id);
-            Generos genero =  _Contexto.Generos.FirstOrDefault(s=> s.GeneroId == peli.Genero);
-            if (pelicula != null && genero != null) 
+        {
+            Peliculas pelicula = await _Contexto.Peliculas.Include(s => s.Funciones).Include(s => s.Generos).FirstOrDefaultAsync(s => s.PeliculaId == Id);
+            Generos genero = _Contexto.Generos.FirstOrDefault(s => s.GeneroId == peli.Genero);
+            if (pelicula != null && genero != null)
             {
-                pelicula.Titulo=peli.Titulo.ToUpper();
-                pelicula.Sinopsis=peli.Sinopsis;
-                pelicula.Poster=peli.Poster;
-                pelicula.Trailer=peli.Trailer;
-                pelicula.Genero = peli.Genero; 
-            } else
+                pelicula.Titulo = peli.Titulo.ToUpper();
+                pelicula.Sinopsis = peli.Sinopsis;
+                pelicula.Poster = peli.Poster;
+                pelicula.Trailer = peli.Trailer;
+                pelicula.Genero = peli.Genero;
+            }
+            else
             {
                 return null;
             }

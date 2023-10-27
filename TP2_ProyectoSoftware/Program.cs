@@ -25,7 +25,7 @@ builder.Services.AddDbContext<Contexto_Cine>(options =>
 
 });
 
-builder.Services.AddTransient<IAgregar,Insertar_Funcion>();
+builder.Services.AddTransient<IAgregar, Insertar_Funcion>();
 builder.Services.AddTransient<IConsultasFunciones, Consulta_Funcion>();
 builder.Services.AddTransient<IServiciosFunciones, ServiciosFunciones>();
 builder.Services.AddTransient<IEliminar, Eliminar_Funcion>();
@@ -35,7 +35,7 @@ builder.Services.AddTransient<IServiciosPeliculas, ServiciosPeliculas>();
 builder.Services.AddTransient<IActualizarPeliculas, Actualizar_Pelicula>();
 builder.Services.AddTransient<IConsultasPeliculas, Consultas_Peliculas>();
 
-var app = builder.Build(); 
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
