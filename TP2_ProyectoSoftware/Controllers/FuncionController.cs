@@ -21,7 +21,11 @@ namespace TP2_ProyectoSoftware.Controllers
         [HttpGet("/api/v1/Funcion/{id}")]
         public async Task<ActionResult> GetFuncion(int id) 
         {
-
+            if (id <= 0)
+            {
+                var respuesta = new { Motivo = "El ID ingresado no es valido, ingrese un id mayor a 0" };
+                return BadRequest(respuesta);
+            }
 
             FuncionRespuesta funcion = await _ServicioFunciones.GetDatosFuncion(id);
             if (funcion == null)
@@ -82,6 +86,12 @@ namespace TP2_ProyectoSoftware.Controllers
         [HttpDelete("/api/v1/Funcion/{id}")]
         public async Task<ActionResult> RemoveFunciones(int id) 
         {
+            if (id <= 0)
+            {
+                var response = new { Motivo = "El ID ingresado no es valido, ingrese un id mayor a 0" };
+                return BadRequest(response);
+            }
+
             Funciones func = await _ServicioFunciones.ComprobarFunciones(id); //Compuebo que el ID exista y si existe se retorna la función con dicho ID
             if (func != null) //Si la función existe ingresa
             {
@@ -99,6 +109,12 @@ namespace TP2_ProyectoSoftware.Controllers
         [HttpGet("/api/v1/Funcion/{id}/tickets")]
         public async Task<ActionResult> ComprobarTickets(int id)
         {
+            if (id <= 0)
+            {
+                var respuesta = new { Motivo = "El ID ingresado no es valido, ingrese un id mayor a 0" };
+                return BadRequest(respuesta);
+            }
+
             if (await _ServicioFunciones.ComprobarFunciones(id) == null) //Comprobamos que la función exista
             {
                 var respuesta = new { Motivo = "Función no registrada en la base de datos"}; //Si no existe se arroja un mensaje HTTP404

@@ -21,6 +21,12 @@ namespace TP2_ProyectoSoftware.Controllers
         [HttpGet("/api/v1/Pelicula/{id}")]
         public async Task<ActionResult> GetInfoPelicula(int id)
         {
+            if (id <= 0)
+            {
+                var respuesta = new { Motivo = "El ID ingresado no es valido, ingrese un id mayor a 0" };
+                return BadRequest(respuesta);
+            }
+
             if (await _Servicio.ComprobarId(id)) //Comprobamos que exista la pelicula 
             { //En caso de no exitir se arroja un mensaje HTTP404
                 var respuesta = new { Motivo = "El ID ingresado no se encuentra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido" };
