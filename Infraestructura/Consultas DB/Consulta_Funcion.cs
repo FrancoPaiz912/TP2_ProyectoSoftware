@@ -16,7 +16,7 @@ namespace Infraestructura.Querys
 
         async Task<List<Funciones>> IConsultasFunciones.ListarFunciones(string? fecha, string? titulo, int? Genero)
         {
-            return await _Contexto.Funciones 
+            return await _Contexto.Funciones
                 .Include(s => s.Tickets)
                 .Include(s => s.Salas)
                 .Include(s => s.Peliculas)
@@ -33,7 +33,7 @@ namespace Infraestructura.Querys
 
         async Task<List<bool>> IConsultasFunciones.GetIDs(int IdPelicula, int IdSala)
         {
-            List<bool> list = new List<bool>(); 
+            List<bool> list = new List<bool>();
 
             if (_Contexto.Peliculas.Any(s => s.PeliculaId == IdPelicula)) list.Add(true);
             else list.Add(false);
@@ -50,13 +50,13 @@ namespace Infraestructura.Querys
         }
 
         async Task<bool> IConsultasFunciones.ComprobacionHoraria(int Salaid, DateTime Fecha, TimeSpan Horainicio)
-        { 
+        {
             TimeSpan HoraFinal = Horainicio + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30);
             List<Funciones> list = _Contexto.Funciones.Where(s => s.SalaId == Salaid && s.Fecha.Day == Fecha.Day && s.Fecha.Month == Fecha.Month).AsEnumerable()
                                                       .Where(s => s.Hora + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30) > Horainicio && Horainicio >= s.Hora
                                                       || s.Hora + TimeSpan.FromHours(2) + TimeSpan.FromMinutes(30) >= HoraFinal && HoraFinal > s.Hora).ToList();
-            if (list.Count() == 0) return false; 
-            else return true; 
+            if (list.Count() == 0) return false;
+            else return true;
         }
 
     }

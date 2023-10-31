@@ -5,6 +5,6 @@ namespace Aplicacion.RespuestasHTTP
     {
         public int FuncionId { get; set; }
         public DateTime Fecha { get; set; }
-        public TimeSpan Horario { get; set; }
+        public string Horario { get; set; }
     }
 }

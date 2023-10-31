@@ -15,14 +15,14 @@ namespace Infraestructura.CUD_DB
         }
 
         async Task<bool> IEliminar.RemoverFuncion(Funciones funcion)
-        { 
+        {
             Funciones result = await _Contexto.Funciones.Include(s => s.Tickets)
                  .Where(s => s.FuncionId == funcion.FuncionId && s.Tickets.Count() == 0).FirstOrDefaultAsync();
-            if (result == null) 
+            if (result == null)
             {
                 return false;
             }
-            _Contexto.Remove(funcion); 
+            _Contexto.Remove(funcion);
             await _Contexto.SaveChangesAsync();
             return true;
         }

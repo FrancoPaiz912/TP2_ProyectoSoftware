@@ -22,9 +22,9 @@ namespace Aplicacion.Casos_de_usos
         //Gets
         async Task<List<FuncionRespuesta>> IServiciosFunciones.GetFuncionesRespuesta(string fecha, string titulo, int? Genero)
         {
-            List<Funciones> Funciones = await _Consultas.ListarFunciones(fecha, titulo, Genero); 
+            List<Funciones> Funciones = await _Consultas.ListarFunciones(fecha, titulo, Genero);
             List<FuncionRespuesta> result = new List<FuncionRespuesta>();
-            foreach (var item in Funciones) 
+            foreach (var item in Funciones)
             {
                 result.Add(new FuncionRespuesta
                 {
@@ -47,7 +47,7 @@ namespace Aplicacion.Casos_de_usos
                         Capacidad = item.Salas.Capacidad,
                     },
                     Fecha = item.Fecha,
-                    Horario = item.Hora,
+                    Horario = item.Hora.ToString(@"hh\:mm"),
                 });
             }
             return result;
@@ -117,36 +117,36 @@ namespace Aplicacion.Casos_de_usos
                     Capacidad = func.Salas.Capacidad,
                 },
                 Fecha = func.Fecha,
-                Horario = func.Hora,
+                Horario = func.Hora.ToString(@"hh\:mm"),
             };
         }
 
         async Task<List<bool>> IServiciosFunciones.GetId(int IdPelicula, int IdSala)
         {
-            return await _Consultas.GetIDs(IdPelicula, IdSala); 
+            return await _Consultas.GetIDs(IdPelicula, IdSala);
         }
 
         async Task<Funciones> IServiciosFunciones.ComprobarFunciones(int id)
         {
-            return await _Consultas.GetIdFuncion(id); 
+            return await _Consultas.GetIdFuncion(id);
         }
         async Task<FuncionEliminadaResponse> IServiciosFunciones.EliminarFuncion(Funciones funcion)
         {
-            if (await _Eliminar.RemoverFuncion(funcion)) 
+            if (await _Eliminar.RemoverFuncion(funcion))
             {
-                return new FuncionEliminadaResponse 
+                return new FuncionEliminadaResponse
                 {
                     FuncionId = funcion.FuncionId,
                     Fecha = funcion.Fecha,
-                    Horario = funcion.Hora,
+                    Horario = funcion.Hora.ToString(@"hh\:mm"),
                 };
             }
-            else return null; 
+            else return null;
         }
 
         async Task<bool> IServiciosFunciones.ComprobarHorario(int Salaid, DateTime Fecha, TimeSpan Hora)
         {
-            return await _Consultas.ComprobacionHoraria(Salaid, Fecha, Hora); 
+            return await _Consultas.ComprobacionHoraria(Salaid, Fecha, Hora);
         }
 
         async Task<TicketRespuesta> IServiciosFunciones.GenerarTicket(int ID, TicketDTO ticket)
@@ -166,7 +166,7 @@ namespace Aplicacion.Casos_de_usos
                 });
             }
 
-            return new TicketRespuesta 
+            return new TicketRespuesta
             {
                 tickets = ListaTickets,
                 Funcion = new FuncionRespuesta
@@ -190,7 +190,7 @@ namespace Aplicacion.Casos_de_usos
                         Capacidad = Response.Salas.Capacidad,
                     },
                     Fecha = Response.Fecha,
-                    Horario = Response.Hora,
+                    Horario = Response.Hora.ToString(@"hh\:mm"),
                 },
                 usuario = Response.Tickets.ElementAt(Response.Tickets.Count - 1).Usuario,
             };
@@ -222,7 +222,7 @@ namespace Aplicacion.Casos_de_usos
                         Capacidad = funcion.Salas.Capacidad,
                     },
                     Fecha = funcion.Fecha,
-                    Horario = funcion.Hora,
+                    Horario = funcion.Hora.ToString(@"hh\:mm"),
                 };
             }
             return null;

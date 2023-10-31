@@ -16,7 +16,7 @@ namespace Aplicacion.Casos_de_usos
         {
             return new AsientosRespuesta
             {
-                Cantidad = await _Consultas.CapacidadDisponible(IdFuncion), 
+                Cantidad = await _Consultas.CapacidadDisponible(IdFuncion),
             };
         }
     }

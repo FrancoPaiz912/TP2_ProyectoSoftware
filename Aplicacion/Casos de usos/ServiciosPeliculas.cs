@@ -19,18 +19,18 @@ namespace Aplicacion.Casos_de_usos
 
         async Task<bool> IServiciosPeliculas.ComprobarId(int id)
         {
-            return await _Consultas.ComprobarID(id); 
+            return await _Consultas.ComprobarID(id);
         }
 
         async Task<bool> IServiciosPeliculas.ConsultarNombre(int ID, PeliculaDTO nombre)
         {
-            return await _Consultas.ComprobarNombre(ID, nombre); 
+            return await _Consultas.ComprobarNombre(ID, nombre);
         }
 
         async Task<PeliculaResponse> IServiciosPeliculas.ActulizarPelicula(int Id, PeliculaDTO peli)
         {
             List<InfoFuncionesParaPeliculaRespuesta> list = new List<InfoFuncionesParaPeliculaRespuesta>();
-            Peliculas pelicula = await _Actualizar.ActualizarPelicula(Id, peli); 
+            Peliculas pelicula = await _Actualizar.ActualizarPelicula(Id, peli);
             if (pelicula != null)
             {
                 foreach (Funciones func in pelicula.Funciones)
@@ -39,11 +39,11 @@ namespace Aplicacion.Casos_de_usos
                     {
                         FuncionId = func.FuncionId,
                         Fecha = func.Fecha,
-                        Horario = func.Hora,
+                        Horario = func.Hora.ToString(@"hh\:mm"),
                     });
                 }
 
-                return new PeliculaResponse 
+                return new PeliculaResponse
                 {
                     Peliculaid = pelicula.PeliculaId,
                     Titulo = pelicula.Titulo,
@@ -61,7 +61,7 @@ namespace Aplicacion.Casos_de_usos
             else return null;
         }
 
-        async Task<string> IServiciosPeliculas.LimitarCaracteres(PeliculaDTO pelicula) 
+        async Task<string> IServiciosPeliculas.LimitarCaracteres(PeliculaDTO pelicula)
         {
             if (pelicula.Titulo.Length > 50)
             {
@@ -86,20 +86,20 @@ namespace Aplicacion.Casos_de_usos
         async Task<PeliculaResponse> IServiciosPeliculas.DatosPelicula(int id)
         {
             List<InfoFuncionesParaPeliculaRespuesta> respuesta = new List<InfoFuncionesParaPeliculaRespuesta>();
-            Peliculas pelicula = await _Consultas.RecuperarPelicula(id); 
-            foreach (Funciones func in pelicula.Funciones) 
+            Peliculas pelicula = await _Consultas.RecuperarPelicula(id);
+            foreach (Funciones func in pelicula.Funciones)
             {
                 respuesta.Add(new InfoFuncionesParaPeliculaRespuesta
                 {
                     FuncionId = func.FuncionId,
                     Fecha = func.Fecha,
-                    Horario = func.Hora,
+                    Horario = func.Hora.ToString(@"hh\:mm"),
                 });
             }
 
-            return new PeliculaResponse 
+            return new PeliculaResponse
             {
-                Peliculaid = pelicula.PeliculaId, 
+                Peliculaid = pelicula.PeliculaId,
                 Titulo = pelicula.Titulo,
                 Sinopsis = pelicula.Sinopsis,
                 Poster = pelicula.Poster,
