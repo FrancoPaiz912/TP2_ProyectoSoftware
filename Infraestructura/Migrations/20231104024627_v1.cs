@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -142,7 +143,7 @@ namespace Infraestructura.Migrations
                 values: new object[,]
                 {
                     { 1, 2, "https://sm.ign.com/t/ign_es/screenshot/default/d0n-cinv4aahikr_mmkj.960.jpg", "Tras el asesinato de su padre, Simba, un joven león es apartado su reino y tendrá que descubrir con ayuda de amigos de la sabana africana el significado de la responsabilidad y la valentía. Más tarde volverá para recuperar el control de su reino.", "EL REY LEÓN", "https://www.youtube.com/watch?v=0U-kFH-ixV0&ab_channel=DubZone%3ALatinoam%C3%A9rica" },
-                    { 2, 7, "https://i.blogs.es/617177/super-mario-bros-pelicula-mario/450_1000.webpupdate-database", "Dos hermanos plomeros, Mario y Luigi, caen por las alcantarillas y llegan a un mundo subterráneo mágico en el que deben enfrentarse al malvado Bowser para rescatar a la princesa Peach, quien ha sido forzada a aceptar casarse con él.", "MARIO BROS", "https://www.youtube.com/watch?v=SvJwEiy2Wok&ab_channel=SensaCineTRAILERS" },
+                    { 2, 7, "https://i.blogs.es/617177/super-mario-bros-pelicula-mario/450_1000.webp", "Dos hermanos plomeros, Mario y Luigi, caen por las alcantarillas y llegan a un mundo subterráneo mágico en el que deben enfrentarse al malvado Bowser para rescatar a la princesa Peach, quien ha sido forzada a aceptar casarse con él.", "MARIO BROS", "https://www.youtube.com/watch?v=SvJwEiy2Wok&ab_channel=SensaCineTRAILERS" },
                     { 3, 7, "https://es.web.img3.acsta.net/pictures/22/06/16/12/54/0504030.jpg", "Gato ha usado ocho de sus nueve vidas y ha perdido la cuenta. Para recuperarlas, se embarca en una gran aventura en la Selva Negra en busca de la mítica Estrella del Deseo, su última esperanza de recuperar sus vidas perdidas.", "EL GATO CON BOTAS: EL ÚLTIMO DESEO", "https://www.youtube.com/watch?v=O_pRSxYuSU8&ab_channel=SensaCineTRAILERS" },
                     { 4, 3, "https://hips.hearstapps.com/hmg-prod/images/poster-vengadores-endgame-1552567490.jpg", "Después de los devastadores eventos ocurridos en Vengadores: Infinity War, el universo está en ruinas debido a las acciones de Thanos, el Titán Loco. Tras la derrota, las cosas no pintan bien para los Vengadores.", "AVENGERS ENDGAME", "https://www.youtube.com/watch?v=Oy_SER6dfK4&ab_channel=Bel%C3%A9nOrtizM." },
                     { 5, 1, "https://cdn.diariojornada.com.ar/imagenes/2023/5/22/347430_1_125855_raw.jpg", "Dom Toretto y sus familias se enfrentan al peor enemigo imaginable, uno llegado desde el pasado con sed de venganza, dispuesto a cualquier cosa con tal de destruir todo aquello que Dom ama.", "RAPIDOS Y FURIOSOS 10", "https://www.youtube.com/watch?v=O5BOxn8Go8U&ab_channel=UniversalPicturesM%C3%A9xico" },

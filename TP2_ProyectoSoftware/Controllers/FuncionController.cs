@@ -32,7 +32,7 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "Ingrese la fecha correctamente con formato dd/mm.";
-                return BadRequest(respuesta.Message);
+                return BadRequest(respuesta);
             }
         }
 
@@ -48,7 +48,7 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "El ID ingresado no es valido, ingrese un id mayor a 0";
-                return BadRequest(respuesta.Message);
+                return BadRequest(respuesta);
             }
 
             FuncionRespuesta funcion = await _ServicioFunciones.GetDatosFuncion(id);
@@ -56,7 +56,7 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "El ID ingresado no coincide con ninguna funcion registrada en la base de datos, intente con otra ID.";
-                return NotFound(respuesta.Message);
+                return NotFound(respuesta);
             }
             return Ok(funcion);
         }
@@ -72,13 +72,13 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "No existe una pelicula asociada a ese ID.";
-                return BadRequest(respuesta.Message);
+                return BadRequest(respuesta);
             }
             if (!result[1])
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "No existe una Sala asociada a ese ID.";
-                return BadRequest(respuesta.Message);
+                return BadRequest(respuesta);
             }
             try
             {
@@ -87,14 +87,14 @@ namespace TP2_ProyectoSoftware.Controllers
                 {
                     Mensaje respuesta = new Mensaje();
                     respuesta.Message = "Horario ocupado, por favor ingrese otro.";
-                    return Conflict(respuesta.Message);
+                    return Conflict(respuesta);
                 }
             }
             catch (FormatException)
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "Por favor ingrese un horario valido con formato hh:mm.";
-                return BadRequest(respuesta.Message);
+                return BadRequest(respuesta);
             }
 
             return new JsonResult(await _ServicioFunciones.AddFunciones(funcion)) { StatusCode = 201 };
@@ -111,7 +111,7 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 Mensaje response = new Mensaje();
                 response.Message = "El ID ingresado no es valido, ingrese un id mayor a 0.";
-                return BadRequest(response.Message);
+                return BadRequest(response);
             }
 
             Funciones func = await _ServicioFunciones.ComprobarFunciones(id);
@@ -123,12 +123,12 @@ namespace TP2_ProyectoSoftware.Controllers
                 {
                     Mensaje response = new Mensaje();
                     response.Message = "La funcion que desea eliminar ya tiene tickets vendidos por lo que no se puede eliminar.";
-                    return Conflict(response.Message);
+                    return Conflict(response);
                 }
             }
             Mensaje respuesta = new Mensaje();
             respuesta.Message = "El ID ingresado no corresponde a ninguna Funcion registrada en la base de datos.";
-            return NotFound(respuesta.Message);
+            return NotFound(respuesta);
         }
 
         [HttpGet("{id}/tickets")]
@@ -141,14 +141,14 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "El ID ingresado no es valido, ingrese un id mayor a 0.";
-                return BadRequest(respuesta.Message);
+                return BadRequest(respuesta);
             }
 
             if (await _ServicioFunciones.ComprobarFunciones(id) == null)
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "Función no registrada en la base de datos.";
-                return NotFound(respuesta.Message);
+                return NotFound(respuesta);
             }
             AsientosRespuesta TicketsDisponibles = await _ServicioSalas.CapacidadDisponible(id);
             return Ok(TicketsDisponibles);
@@ -164,7 +164,7 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "Función no registrada en la base de datos.";
-                return NotFound(respuesta.Message);
+                return NotFound(respuesta);
             }
 
             AsientosRespuesta Asientos = await _ServicioSalas.CapacidadDisponible(id);
@@ -173,14 +173,14 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "Ingreso de un numero no valido. Por favor ingrese un valor mayor a 0.";
-                return BadRequest(respuesta.Message);
+                return BadRequest(respuesta);
             }
 
             if (Asientos.Cantidad < Ticket.Cantidad)
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "La cantidad de entradas solicitadas excedes a la cantidad de entradas disponibles.";
-                return BadRequest(respuesta.Message);
+                return BadRequest(respuesta);
             }
 
             return Ok(await _ServicioFunciones.GenerarTicket(id, Ticket));

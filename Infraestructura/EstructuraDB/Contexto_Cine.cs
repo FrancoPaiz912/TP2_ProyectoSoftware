@@ -184,7 +184,7 @@ namespace Infraestructura.EstructuraDB
                 {
                     PeliculaId = 2,
                     Titulo = "MARIO BROS",
-                    Poster = "https://i.blogs.es/617177/super-mario-bros-pelicula-mario/450_1000.webpupdate-database",
+                    Poster = "https://i.blogs.es/617177/super-mario-bros-pelicula-mario/450_1000.webp",
                     Sinopsis = "Dos hermanos plomeros, Mario y Luigi, caen por las alcantarillas y llegan a un mundo subterráneo mágico en el que deben enfrentarse al malvado Bowser para rescatar a la princesa Peach, quien ha sido forzada a aceptar casarse con él.",
                     Trailer = "https://www.youtube.com/watch?v=SvJwEiy2Wok&ab_channel=SensaCineTRAILERS",
                     Genero = 7
