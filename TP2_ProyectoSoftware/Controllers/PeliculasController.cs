@@ -26,14 +26,14 @@ namespace TP2_ProyectoSoftware.Controllers
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "El ID ingresado no es valido, ingrese un id mayor a 0.";
-                return BadRequest(respuesta.Message);
+                return BadRequest(respuesta);
             }
 
             if (await _Servicio.ComprobarId(id))
             {
                 Mensaje respuesta = new Mensaje();
                 respuesta.Message = "El ID ingresado no se encuentra asociado a ninguna pelicula registrada en la base de datos, por favor ingrese uno válido.";
-                return NotFound(respuesta.Message);
+                return NotFound(respuesta);
             }
             PeliculaResponse pelicula = await _Servicio.DatosPelicula(id);
             return Ok(pelicula);
